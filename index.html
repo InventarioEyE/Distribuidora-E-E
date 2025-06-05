@@ -7,6 +7,243 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+          /* Estilos de responsividad móvil adicionales */
+        @media (max-width: 768px) {
+            /* Ajustes de header */
+            .header-top {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px;
+            }
+            
+            .brand-container {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            
+            .nav-horizontal {
+                flex-wrap: wrap;
+                gap: 5px;
+                margin: 10px 0;
+            }
+            
+            .nav-horizontal a {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            
+            .header-right {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .search-container {
+                width: 100%;
+            }
+            
+            .user-actions {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .mobile-menu-btn {
+                position: absolute;
+                top: 20px;
+                right: 15px;
+            }
+            
+            /* Ajustes de contenido principal */
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .products-section h2 {
+                font-size: 1.5rem;
+            }
+            
+            .product-filters {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                padding-bottom: 5px;
+            }
+            
+            .filter-btn {
+                padding: 8px 15px;
+                font-size: 14px;
+                white-space: nowrap;
+            }
+            
+            /* Mejora de tarjetas de producto */
+            .product-card {
+                min-width: calc(100% - 20px);
+                margin: 0 10px;
+            }
+            
+            .product-image {
+                height: 150px;
+            }
+            
+            .product-title {
+                font-size: 1rem;
+            }
+            
+            .product-price {
+                font-size: 1.1rem;
+            }
+            
+            /* Ajustes para modales */
+            .modal-content {
+                width: 90%;
+                margin: 20% auto;
+                padding: 15px;
+            }
+            
+            .cart-modal-content, .checkout-modal-content {
+                width: 95%;
+            }
+            
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .cart-item-image {
+                width: 100%;
+                height: auto;
+                margin-bottom: 10px;
+            }
+            
+            .delivery-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .store-locations {
+                flex-direction: column;
+            }
+            
+            /* Footer */
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-section {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            
+            .social-icons {
+                justify-content: center;
+            }
+            
+            /* Botones flotantes */
+            .social-floating {
+                bottom: 70px;
+                right: 15px;
+            }
+            
+            .feedback-btn {
+                bottom: 15px;
+                right: 15px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            /* Panel de administración */
+            .admin-filters {
+                flex-direction: column;
+            }
+            
+            .admin-filters .search-container {
+                min-width: 100%;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            /* Navegación inferior móvil */
+            .bottom-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                display: flex;
+                justify-content: space-around;
+                background: white;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+                z-index: 1000;
+                padding: 8px 0;
+            }
+            
+            .nav-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                font-size: 12px;
+            }
+            
+            .nav-item i {
+                font-size: 18px;
+                margin-bottom: 3px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            /* Ajustes adicionales para pantallas muy pequeñas */
+            .hero {
+                padding: 2rem 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+            
+            .btn-shop {
+                padding: 0.7rem 1.5rem;
+            }
+            
+            .logo {
+                height: 70px;
+            }
+            
+            .brand-name h1 {
+                font-size: 1.3rem;
+            }
+            
+            .brand-name p {
+                font-size: 0.85rem;
+            }
+            
+            .btn-login, .btn-register, .btn-logout, .btn-history {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.85rem;
+            }
+            
+            .product-info {
+                padding: 1rem;
+            }
+            
+            .step {
+                padding: 1rem;
+            }
+            
+            .step h4 {
+                font-size: 1rem;
+            }
+        }
+        
+        /* Mejoras para inputs en móviles */
+        input, select, textarea, button {
+            font-size: 16px !important;
+        }
         /* Estilos adicionales para los botones de navegación */
         .nav-horizontal {
             display: flex;
