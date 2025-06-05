@@ -37,6 +37,31 @@
     </style>
 </head>
 <body>
+    <!-- Barra de navegación inferior móvil -->
+    <div class="bottom-nav">
+        <div class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>Buscar</span>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Carrito</span>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </div>
+    </div>
+
+    <!-- Botón Feedback flotante -->
+    <a href="#contacto" class="feedback-btn">
+        <i class="fas fa-comment-alt"></i>
+    </a>
+
     <!-- Header con Login y Búsqueda -->
     <header class="header">
         <div class="header-top">
@@ -68,7 +93,6 @@
                     <button id="login-btn" class="btn-login">Iniciar Sesión</button>
                     <button id="register-btn" class="btn-register">Registrarse</button>
                     <button id="logout-btn" class="btn-logout" style="display: none;">Cerrar Sesión</button>
-                    <!-- Nuevo botón de historial -->
                     <button id="history-btn" class="btn-history" style="display: none;">
                         <i class="fas fa-history"></i> Historial
                     </button>
@@ -150,26 +174,24 @@
                 <button class="filter-btn" data-category="otros">Otros Animales</button>
             </div>
             
-            <!-- Sección Todos: mostrará categorías una debajo de otra -->
             <div id="all-products-container">
                 <!-- Las categorías se cargarán dinámicamente -->
             </div>
             
-            <!-- Secciones individuales para cada categoría -->
             <div id="perros-container" class="category-container" style="display: none;">
-                <!-- Productos de perros se cargarán dinámicamente -->
+                <!-- Productos de perros -->
             </div>
             
             <div id="gatos-container" class="category-container" style="display: none;">
-                <!-- Productos de gatos se cargarán dinámicamente -->
+                <!-- Productos de gatos -->
             </div>
             
             <div id="accesorios-container" class="category-container" style="display: none;">
-                <!-- Accesorios se cargarán dinámicamente -->
+                <!-- Accesorios -->
             </div>
             
             <div id="otros-container" class="category-container" style="display: none;">
-                <!-- Otros animales se cargarán dinámicamente -->
+                <!-- Otros animales -->
             </div>
         </section>
 
@@ -177,7 +199,7 @@
             <h2>Ofertas Especiales</h2>
             <div class="carousel-container">
                 <div class="products-carousel" id="offers-carousel">
-                    <!-- Productos en oferta se cargarán dinámicamente -->
+                    <!-- Productos en oferta -->
                 </div>
                 <div class="carousel-controls">
                     <button class="carousel-btn prev-offer-btn">
@@ -227,7 +249,7 @@
         </div>
     </div>
 
-    <!-- Agregar librería jsPDF para generar facturas -->
+    <!-- Librerías JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
 </body>
