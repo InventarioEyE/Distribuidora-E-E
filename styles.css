@@ -1608,3 +1608,188 @@ select {
     padding: 0.3rem 0.6rem;
     border-radius: 4px;
 }
+/* ================================= */
+/* RESPONSIVE MOBILE (320px - 768px) */
+/* ================================= */
+@media (max-width: 768px) {
+  /* Header móvil */
+  .header-top {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px;
+  }
+
+  .brand-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .logo {
+    height: 70px;
+    margin-bottom: 10px;
+  }
+
+  .header-right {
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .nav-horizontal {
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 10px;
+  }
+
+  .nav-horizontal a {
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+  }
+
+  /* Menú hamburguesa */
+  .mobile-menu-btn {
+    display: block;
+    position: absolute;
+    top: 20px;
+    right: 15px;
+    z-index: 101;
+  }
+
+  .nav-horizontal {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: white;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    z-index: 100;
+  }
+
+  .header.menu-open .nav-horizontal {
+    display: flex;
+  }
+
+  /* Barra inferior fija */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.8rem;
+  }
+
+  .nav-item i {
+    font-size: 1.2rem;
+    margin-bottom: 3px;
+  }
+
+  /* Contenido principal */
+  .main-content {
+    padding: 1rem;
+    padding-bottom: 70px; /* Espacio para barra inferior */
+  }
+
+  .hero {
+    padding: 2rem 1rem;
+  }
+
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .product-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    justify-content: flex-start;
+  }
+
+  .filter-btn {
+    min-width: max-content;
+    padding: 8px 15px;
+    font-size: 0.85rem;
+  }
+
+  /* Grid de productos */
+  .products-carousel {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .product-card {
+    margin-bottom: 10px;
+  }
+
+  .product-image {
+    height: 150px;
+  }
+
+  .product-title {
+    font-size: 1rem;
+  }
+
+  /* Modal de login/registro */
+  .modal-content {
+    margin: 20% auto;
+    width: 90%;
+    padding: 1.5rem;
+  }
+
+  /* Panel de administración */
+  .admin-filters {
+    flex-direction: column;
+  }
+
+  .admin-filters .search-container {
+    min-width: 100%;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Botón flotante feedback */
+  .feedback-btn {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--secondary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  }
+}
+
+/* ============================= */
+/* RESPONSIVE TABLET (769px - 1024px) */
+/* ============================= */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .products-carousel {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
