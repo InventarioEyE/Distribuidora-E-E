@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Distribuidora E&E</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-top">
+            <div class="brand-container">
+                <a href="#inicio" class="brand-link">
+                    <div class="logo-container">
+                        <img src="imagen/logo.jpg" alt="Distribuidora E&E Logo" class="logo">
+                    </div>
+                    <div class="brand-name">
+                        <h1>Distribuidora <span>E&E</span></h1>
+                        <p>Panel de administración</p>
+                    </div>
+                </a>
+            </div>
+            <div class="user-actions">
+                <button id="logout-btn" class="btn-logout">Cerrar Sesión</button>
+                <!-- Nuevo botón de historial -->
+                <button id="admin-history-btn" class="btn-history">
+                    <i class="fas fa-history"></i> Historial
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="admin-section">
+            <h2>Panel de Administración</h2>
+            
+            <div class="admin-actions">
+                <button id="add-product-btn" class="btn-register">Agregar Producto</button>
+            </div>
+            
+            <div class="admin-filters">
+                <div class="search-container">
+                    <input type="text" id="admin-search" placeholder="Buscar productos...">
+                    <button id="admin-search-btn"><i class="fas fa-search"></i></button>
+                </div>
+                <div class="category-filter">
+                    <label for="admin-category">Filtrar por categoría:</label>
+                    <select id="admin-category">
+                        <option value="all">Todas</option>
+                        <option value="perros">Perros</option>
+                        <option value="gatos">Gatos</option>
+                        <option value="accesorios">Accesorios</option>
+                        <option value="otros">Otros</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="products-admin-container" class="products-grid">
+                <!-- Productos se cargarán dinámicamente -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal para editar/agregar producto -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title">Nuevo Producto</h2>
+            <form id="product-form">
+                <input type="hidden" id="product-id">
+                <div class="form-group">
+                    <label for="product-name">Nombre:</label>
+                    <input type="text" id="product-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-brand">Marca:</label>
+                    <input type="text" id="product-brand" placeholder="Opcional">
+                </div>
+                <div class="form-group">
+                    <label for="product-category">Categoría:</label>
+                    <select id="product-category" required>
+                        <option value="perros">Perros</option>
+                        <option value="gatos">Gatos</option>
+                        <option value="accesorios">Accesorios</option>
+                        <option value="otros">Otros</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="product-description">Descripción:</label>
+                    <textarea id="product-description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="product-price">Precio:</label>
+                    <input type="number" id="product-price" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-on-sale">
+                        <input type="checkbox" id="product-on-sale"> En oferta
+                    </label>
+                </div>
+                <div class="form-group" id="sale-price-group" style="display: none;">
+                    <label for="product-sale-price">Precio de oferta:</label>
+                    <input type="number" id="product-sale-price" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="product-image">Imagen:</label>
+                    <input type="file" id="product-image" accept="image/*" required>
+                    <div id="image-preview" class="image-preview"></div>
+                </div>
+                <button type="submit" class="btn-submit">Guardar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
