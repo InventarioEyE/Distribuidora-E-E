@@ -1,11 +1,532 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administración - Distribuidora E&E</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel de Administración - Distribuidora E&E</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #2E7D32;
+      --secondary-color: #2196F3;
+      --danger-color: #f44336;
+      --background-color: #f5f5f5;
+      --text-color: #333;
+      --card-bg: #fff;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --radius: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: var(--background-color);
+      color: var(--text-color);
+    }
+
+    header {
+      background: white;
+      padding: 20px 30px;
+      border-bottom: 1px solid #ddd;
+      box-shadow: var(--shadow);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      width: 60px;
+      height: auto;
+      border-radius: 6px;
+    }
+
+    .brand-name h1 {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+
+    .brand-name span {
+      color: var(--secondary-color);
+    }
+
+    .user-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-logout,
+    .btn-history {
+      padding: 8px 16px;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .btn-logout {
+      background: var(--danger-color);
+      color: white;
+    }
+
+    .btn-history {
+      background: var(--secondary-color);
+      color: white;
+    }
+
+    .btn-logout:hover {
+      background: #d32f2f;
+    }
+
+    .btn-history:hover {
+      background: #1976D2;
+    }
+
+    main {
+      padding: 30px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: var(--primary-color);
+    }
+
+    .admin-actions {
+      margin-bottom: 20px;
+    }
+
+    #add-product-btn {
+      background: var(--primary-color);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    #add-product-btn:hover {
+      background: #1b5e20;
+    }
+
+    .admin-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .admin-filters input,
+    .admin-filters select {
+      padding: 10px;
+      border-radius: var(--radius);
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      flex: 1;
+    }
+
+    .search-container {
+      display: flex;
+      gap: 10px;
+      flex: 2;
+    }
+
+    #admin-search-btn {
+      background: var(--secondary-color);
+      color: white;
+      border: none;
+      padding: 0 16px;
+      border-radius: var(--radius);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .admin-products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .admin-product-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.2s ease;
+    }
+
+    .admin-product-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .admin-product-image {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+    }
+
+    .admin-product-info {
+      padding: 12px;
+    }
+
+    .admin-product-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .admin-product-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+
+    .admin-product-category {
+      background: #e8f5e9;
+      color: var(--primary-color);
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    .admin-product-price {
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-edit,
+    .btn-delete {
+      flex: 1;
+      padding: 6px 8px;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      color: white;
+      font-size: 0.85rem;
+    }
+
+    .btn-edit {
+      background: var(--secondary-color);
+    }
+
+    .btn-delete {
+      background: var(--danger-color);
+    }
+
+    .btn-edit:hover {
+      background: #1976D2;
+    }
+
+    .btn-delete:hover {
+      background: #c62828;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 500px;
+      position: relative;
+      box-shadow: var(--shadow);
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #999;
+    }
+
+    .close-modal:hover {
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: var(--radius);
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .btn-submit {
+      background: var(--primary-color);
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .btn-submit:hover {
+      background: #1b5e20;
+    }
+
+    /* Estilos para el historial de compras */
+    .history-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .history-modal-content {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      width: 90%;
+      max-width: 900px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 25px;
+      position: relative;
+    }
+    
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .history-title {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+    }
+    
+    .history-user-card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    
+    .user-header {
+      background: #f0f7ff;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .user-info {
+      flex: 1;
+    }
+    
+    .user-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .user-email {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    .purchase-list {
+      padding: 15px 20px;
+    }
+    
+    .purchase-item {
+      border: 1px solid #eaeaea;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      padding: 15px;
+      background: #fafafa;
+    }
+    
+    .purchase-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #e0e0e0;
+    }
+    
+    .purchase-date {
+      font-weight: 600;
+      color: #444;
+    }
+    
+    .purchase-time {
+      color: #777;
+      font-size: 0.9rem;
+    }
+    
+    .purchase-total {
+      font-weight: bold;
+      color: var(--primary-color);
+      font-size: 1.1rem;
+    }
+    
+    .purchase-products {
+      margin-top: 10px;
+    }
+    
+    .product-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .product-item:last-child {
+      border-bottom: none;
+    }
+    
+    .product-name {
+      flex: 2;
+    }
+    
+    .product-quantity {
+      flex: 1;
+      text-align: center;
+    }
+    
+    .product-price {
+      flex: 1;
+      text-align: right;
+      font-weight: 500;
+    }
+    
+    .no-purchases {
+      text-align: center;
+      padding: 30px;
+      color: #777;
+      font-style: italic;
+    }
+    
+    .close-history {
+      background: var(--danger-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .close-history:hover {
+      background: #d32f2f;
+    }
+
+    @media (max-width: 768px) {
+      .header-top {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .user-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .user-actions button {
+        width: 100%;
+      }
+
+      .admin-filters {
+        flex-direction: column;
+      }
+
+      .admin-products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      }
+
+      .admin-product-image {
+        height: 120px;
+      }
+      
+      .history-modal-content {
+        padding: 15px;
+      }
+      
+      .user-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .purchase-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+      }
+    }
+  </style>
 </head>
 <body>
     <header class="header">
@@ -23,7 +544,6 @@
             </div>
             <div class="user-actions">
                 <button id="logout-btn" class="btn-logout">Cerrar Sesión</button>
-                <!-- Nuevo botón de historial -->
                 <button id="admin-history-btn" class="btn-history">
                     <i class="fas fa-history"></i> Historial
                 </button>
@@ -34,11 +554,9 @@
     <main class="main-content">
         <section class="admin-section">
             <h2>Panel de Administración</h2>
-            
             <div class="admin-actions">
                 <button id="add-product-btn" class="btn-register">Agregar Producto</button>
             </div>
-            
             <div class="admin-filters">
                 <div class="search-container">
                     <input type="text" id="admin-search" placeholder="Buscar productos...">
@@ -55,14 +573,12 @@
                     </select>
                 </div>
             </div>
-            
-            <div id="products-admin-container" class="products-grid">
+            <div id="products-admin-container" class="admin-products-grid">
                 <!-- Productos se cargarán dinámicamente -->
             </div>
         </section>
     </main>
 
-    <!-- Modal para editar/agregar producto -->
     <div id="product-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -112,7 +628,391 @@
             </form>
         </div>
     </div>
+    
+    <!-- Modal para historial de compras -->
+    <div id="history-modal" class="history-modal">
+      <div class="history-modal-content">
+        <div class="history-header">
+          <h2 class="history-title">Historial de Compras</h2>
+          <button class="close-history">&times;</button>
+        </div>
+        <div id="history-container"></div>
+      </div>
+    </div>
 
-    <script src="admin.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+          const productsAdminContainer = document.getElementById('products-admin-container');
+          const addProductBtn = document.getElementById('add-product-btn');
+          const logoutBtn = document.getElementById('logout-btn');
+          const adminHistoryBtn = document.getElementById('admin-history-btn');
+          const productModal = document.getElementById('product-modal');
+          const closeModal = document.querySelector('.close-modal');
+          const productForm = document.getElementById('product-form');
+          const modalTitle = document.getElementById('modal-title');
+          const onSaleCheckbox = document.getElementById('product-on-sale');
+          const salePriceGroup = document.getElementById('sale-price-group');
+          const adminSearchInput = document.getElementById('admin-search');
+          const adminSearchBtn = document.getElementById('admin-search-btn');
+          const adminCategoryFilter = document.getElementById('admin-category');
+          const historyModal = document.getElementById('history-modal');
+          const closeHistoryBtn = document.querySelector('.close-history');
+          const historyContainer = document.getElementById('history-container');
+
+          let products = JSON.parse(localStorage.getItem('products')) || [];
+          let editingProductId = null;
+
+          // Verificar si el usuario es administrador
+          const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+          if (!currentUser || !currentUser.isAdmin) {
+              alert('Acceso no autorizado');
+              window.location.href = 'index.html';
+          }
+
+          // Cargar productos
+          loadAdminProducts();
+
+          // Event Listeners
+          addProductBtn.addEventListener('click', () => {
+              editingProductId = null;
+              productForm.reset();
+              document.getElementById('product-id').value = '';
+              modalTitle.textContent = 'Agregar Producto';
+              productModal.style.display = 'block';
+              onSaleCheckbox.checked = false;
+              salePriceGroup.style.display = 'none';
+          });
+
+          closeModal.addEventListener('click', () => {
+              productModal.style.display = 'none';
+          });
+
+          logoutBtn.addEventListener('click', () => {
+              localStorage.removeItem('currentUser');
+              window.location.href = 'index.html';
+          });
+          
+          // Event listener para historial
+          adminHistoryBtn.addEventListener('click', openAdminHistory);
+          
+          // Event listener para cerrar historial
+          closeHistoryBtn.addEventListener('click', () => {
+              historyModal.style.display = 'none';
+          });
+
+          productForm.addEventListener('submit', (e) => {
+              e.preventDefault();
+              saveProduct();
+          });
+          
+          // Event listener para ofertas
+          onSaleCheckbox.addEventListener('change', () => {
+              salePriceGroup.style.display = onSaleCheckbox.checked ? 'block' : 'none';
+          });
+
+          // Event listeners para búsqueda y filtro
+          adminSearchBtn.addEventListener('click', performAdminSearch);
+          adminSearchInput.addEventListener('keyup', (e) => {
+              if (e.key === 'Enter') performAdminSearch();
+          });
+          adminCategoryFilter.addEventListener('change', performAdminSearch);
+
+          // Funciones
+          function loadAdminProducts() {
+              displayAdminProducts(products);
+          }
+          
+          function displayAdminProducts(productsToDisplay) {
+              productsAdminContainer.innerHTML = '';
+              
+              productsToDisplay.forEach(product => {
+                  const productCard = document.createElement('div');
+                  productCard.className = 'admin-product-card';
+                  productCard.innerHTML = `
+                      <img src="${product.image}" alt="${product.name}" class="admin-product-image">
+                      <div class="admin-product-info">
+                          <h3 class="admin-product-title">${product.name}</h3>
+                          <div class="admin-product-meta">
+                              <span class="admin-product-category">${getCategoryName(product.category)}</span>
+                              <span class="admin-product-price">Bs${product.onSale ? product.salePrice.toFixed(2) : product.price.toFixed(2)}</span>
+                          </div>
+                          <div class="admin-actions">
+                              <button class="btn-edit" data-id="${product.id}">Editar</button>
+                              <button class="btn-delete" data-id="${product.id}">Eliminar</button>
+                          </div>
+                      </div>
+                  `;
+                  productsAdminContainer.appendChild(productCard);
+                  
+                  // Agregar event listeners
+                  productCard.querySelector('.btn-edit').addEventListener('click', () => editProduct(product.id));
+                  productCard.querySelector('.btn-delete').addEventListener('click', () => deleteProduct(product.id));
+              });
+          }
+        
+          function performAdminSearch() {
+              const searchTerm = adminSearchInput.value.toLowerCase();
+              const category = adminCategoryFilter.value;
+              
+              let filteredProducts = products;
+              
+              // Filtrar por categoría
+              if (category !== 'all') {
+                  filteredProducts = filteredProducts.filter(product => product.category === category);
+              }
+              
+              // Filtrar por término de búsqueda
+              if (searchTerm) {
+                  filteredProducts = filteredProducts.filter(product => 
+                      product.name.toLowerCase().includes(searchTerm) || 
+                      (product.brand && product.brand.toLowerCase().includes(searchTerm)) ||
+                      product.description.toLowerCase().includes(searchTerm)
+                  );
+              }
+              
+              // Mostrar productos filtrados
+              displayAdminProducts(filteredProducts);
+          }
+
+          function editProduct(id) {
+              const product = products.find(p => p.id === id);
+              if (product) {
+                  editingProductId = id;
+                  document.getElementById('product-id').value = id;
+                  document.getElementById('product-name').value = product.name;
+                  document.getElementById('product-brand').value = product.brand || '';
+                  document.getElementById('product-category').value = product.category;
+                  document.getElementById('product-description').value = product.description;
+                  document.getElementById('product-price').value = product.price;
+                  document.getElementById('product-image').value = product.image;
+                  
+                  // Manejar ofertas
+                  onSaleCheckbox.checked = product.onSale || false;
+                  salePriceGroup.style.display = onSaleCheckbox.checked ? 'block' : 'none';
+                  document.getElementById('product-sale-price').value = product.salePrice || '';
+                  
+                  modalTitle.textContent = 'Editar Producto';
+                  productModal.style.display = 'block';
+              }
+          }
+
+          function saveProduct() {
+              const id = editingProductId || Date.now();
+              const name = document.getElementById('product-name').value;
+              const brand = document.getElementById('product-brand').value;
+              const category = document.getElementById('product-category').value;
+              const description = document.getElementById('product-description').value;
+              const price = parseFloat(document.getElementById('product-price').value);
+              const image = document.getElementById('product-image').value;
+              const onSale = document.getElementById('product-on-sale').checked;
+              const salePrice = onSale ? parseFloat(document.getElementById('product-sale-price').value) : null;
+              
+              if (editingProductId) {
+                  // Actualizar producto existente
+                  const index = products.findIndex(p => p.id === editingProductId);
+                  if (index !== -1) {
+                      products[index] = { 
+                          ...products[index], 
+                          name, 
+                          brand, 
+                          category, 
+                          description, 
+                          price, 
+                          image, 
+                          onSale, 
+                          salePrice 
+                      };
+                  }
+              } else {
+                  // Agregar nuevo producto
+                  products.push({ 
+                      id, 
+                      name, 
+                      brand, 
+                      category, 
+                      description, 
+                      price, 
+                      image, 
+                      onSale, 
+                      salePrice 
+                  });
+              }
+              
+              // Guardar en localStorage
+              localStorage.setItem('products', JSON.stringify(products));
+              
+              // Recargar productos
+              performAdminSearch(); // Actualizar con los filtros actuales
+              
+              // Cerrar modal
+              productModal.style.display = 'none';
+              
+              // Actualizar la tienda principal si está abierta
+              if (window.opener && !window.opener.closed) {
+                  const currentCategory = window.opener.document.querySelector('.filter-btn.active')?.dataset.category || 'all';
+                  window.opener.loadProducts(currentCategory);
+                  window.opener.loadOffers();
+                  window.opener.loadAllProducts();
+              }
+          }
+
+          function deleteProduct(id) {
+              if (confirm('¿Estás seguro de eliminar este producto?')) {
+                  products = products.filter(p => p.id !== id);
+                  localStorage.setItem('products', JSON.stringify(products));
+                  performAdminSearch(); // Actualizar con los filtros actuales
+                  
+                  // Actualizar la tienda principal si está abierta
+                  if (window.opener && !window.opener.closed) {
+                      const currentCategory = window.opener.document.querySelector('.filter-btn.active')?.dataset.category || 'all';
+                      window.opener.loadProducts(currentCategory);
+                      window.opener.loadOffers();
+                      window.opener.loadAllProducts();
+                  }
+              }
+          }
+
+          // Función para obtener nombre de categoría
+          function getCategoryName(category) {
+              const names = {
+                  'perros': 'Perros',
+                  'gatos': 'Gatos',
+                  'accesorios': 'Accesorios',
+                  'otros': 'Otros Animales'
+              };
+              return names[category] || category;
+          }
+          
+          // Función para abrir el historial de compras
+          function openAdminHistory() {
+              historyContainer.innerHTML = '';
+              historyModal.style.display = 'flex';
+              
+              // Obtener todos los usuarios
+              const users = JSON.parse(localStorage.getItem('users')) || [];
+              const usersMap = new Map();
+              users.forEach(user => {
+                  usersMap.set(user.id.toString(), user);
+              });
+              
+              // Obtener todos los historiales de compra
+              const allPurchases = [];
+              
+              // Recorrer todas las claves en localStorage
+              for (let i = 0; i < localStorage.length; i++) {
+                  const key = localStorage.key(i);
+                  if (key.startsWith('userHistory_')) {
+                      const userId = key.split('_')[1];
+                      const userHistory = JSON.parse(localStorage.getItem(key)) || [];
+                      
+                      // Agregar cada compra al array general
+                      userHistory.forEach(purchase => {
+                          allPurchases.push({
+                              userId,
+                              ...purchase
+                          });
+                      });
+                  }
+              }
+              
+              // Agrupar compras por usuario
+              const purchasesByUser = {};
+              
+              allPurchases.forEach(purchase => {
+                  if (!purchasesByUser[purchase.userId]) {
+                      purchasesByUser[purchase.userId] = [];
+                  }
+                  purchasesByUser[purchase.userId].push(purchase);
+              });
+              
+              // Ordenar usuarios por nombre
+              const sortedUserIds = Object.keys(purchasesByUser).sort((a, b) => {
+                  const userA = usersMap.get(a) || { name: '' };
+                  const userB = usersMap.get(b) || { name: '' };
+                  return userA.name.localeCompare(userB.name);
+              });
+              
+              if (sortedUserIds.length === 0) {
+                  historyContainer.innerHTML = `
+                    <div class="no-purchases">
+                      <i class="fas fa-shopping-cart" style="font-size: 3rem; margin-bottom: 15px; color: #ddd;"></i>
+                      <h3>No hay compras registradas</h3>
+                      <p>Aún no se han realizado compras en el sistema</p>
+                    </div>
+                  `;
+                  return;
+              }
+              
+              // Mostrar compras agrupadas por usuario
+              sortedUserIds.forEach(userId => {
+                  const user = usersMap.get(userId);
+                  const userPurchases = purchasesByUser[userId];
+                  
+                  // Crear contenedor para el usuario
+                  const userCard = document.createElement('div');
+                  userCard.className = 'history-user-card';
+                  
+                  // Cabecera de usuario
+                  const userHeader = document.createElement('div');
+                  userHeader.className = 'user-header';
+                  userHeader.innerHTML = `
+                    <div class="user-info">
+                      <div class="user-name">${user ? user.name : 'Usuario Desconocido'}</div>
+                      <div class="user-email">${user ? user.email : 'Sin información de contacto'}</div>
+                    </div>
+                    <div class="purchase-count">${userPurchases.length} compra${userPurchases.length !== 1 ? 's' : ''}</div>
+                  `;
+                  
+                  userCard.appendChild(userHeader);
+                  
+                  // Lista de compras
+                  const purchaseList = document.createElement('div');
+                  purchaseList.className = 'purchase-list';
+                  
+                  // Ordenar compras por fecha (más reciente primero)
+                  userPurchases.sort((a, b) => new Date(b.date) - new Date(a.date));
+                  
+                  userPurchases.forEach(purchase => {
+                      const purchaseItem = document.createElement('div');
+                      purchaseItem.className = 'purchase-item';
+                      
+                      const date = new Date(purchase.date);
+                      const formattedDate = date.toLocaleDateString();
+                      const formattedTime = date.toLocaleTimeString();
+                      
+                      purchaseItem.innerHTML = `
+                        <div class="purchase-header">
+                          <div>
+                            <span class="purchase-date">${formattedDate}</span>
+                            <span class="purchase-time">${formattedTime}</span>
+                          </div>
+                          <div class="purchase-total">Bs ${purchase.total.toFixed(2)}</div>
+                        </div>
+                        <div class="purchase-products"></div>
+                      `;
+                      
+                      const productsContainer = purchaseItem.querySelector('.purchase-products');
+                      
+                      // Agregar productos
+                      purchase.items.forEach(item => {
+                          const productItem = document.createElement('div');
+                          productItem.className = 'product-item';
+                          productItem.innerHTML = `
+                            <div class="product-name">${item.name}</div>
+                            <div class="product-quantity">x${item.quantity}</div>
+                            <div class="product-price">Bs ${item.price.toFixed(2)}</div>
+                          `;
+                          productsContainer.appendChild(productItem);
+                      });
+                      
+                      purchaseList.appendChild(purchaseItem);
+                  });
+                  
+                  userCard.appendChild(purchaseList);
+                  historyContainer.appendChild(userCard);
+              });
+          }
+      });
+    </script>
 </body>
 </html>
