@@ -71,51 +71,35 @@ document.addEventListener('DOMContentLoaded', () => {
         displayAdminProducts(products);
     }
     
-    function displayAdminProducts(productsToDisplay) {
-        productsAdminContainer.innerHTML = '';
-        
-        if (productsToDisplay.length === 0) {
-            productsAdminContainer.innerHTML = '<p class="no-products">No se encontraron productos</p>';
-            return;
-        }
-        
-        productsToDisplay.forEach(product => {
-            const productCard = document.createElement('div');
-            productCard.className = 'product-card';
-            
-            const priceHtml = product.onSale 
-                ? `<p class="product-price original-price">Bs${product.price.toFixed(2)}</p>
-                   <p class="product-price sale-price">Bs${product.salePrice.toFixed(2)}</p>`
-                : `<p class="product-price">Bs${product.price.toFixed(2)}</p>`;
-            
-            productCard.innerHTML = `
-                <img src="${product.image}" alt="${product.name}" class="product-image">
-                <div class="product-info">
-                    <h3 class="product-title">${product.name}</h3>
-                    ${product.brand ? `<p class="product-brand">${product.brand}</p>` : ''}
-                    <p class="product-category">${getCategoryName(product.category)}</p>
-                    ${priceHtml}
-                    <div class="admin-actions">
-                        <button class="btn-edit" data-id="${product.id}">Editar</button>
-                        <button class="btn-delete" data-id="${product.id}">Eliminar</button>
-                    </div>
-                </div>
-            `;
-            productsAdminContainer.appendChild(productCard);
-            
-            // Agregar event listeners a los botones
-            productCard.querySelector('.btn-edit').addEventListener('click', (e) => {
-                const productId = parseInt(e.target.dataset.id);
-                editProduct(productId);
-            });
-            
-            productCard.querySelector('.btn-delete').addEventListener('click', (e) => {
-                const productId = parseInt(e.target.dataset.id);
-                deleteProduct(productId);
-            });
-        });
-    }
+    // Reemplazar la función displayAdminProducts
+function displayAdminProducts(productsToDisplay) {
+    productsAdminContainer.innerHTML = '';
     
+    productsToDisplay.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.className = 'admin-product-card';
+        productCard.innerHTML = `
+            <img src="${product.image}" alt="${product.name}" class="admin-product-image">
+            <div class="admin-product-info">
+                <h3 class="admin-product-title">${product.name}</h3>
+                <div class="admin-product-meta">
+                    <span class="admin-product-category">${getCategoryName(product.category)}</span>
+                    <span class="admin-product-price">Bs${product.onSale ? product.salePrice.toFixed(2) : product.price.toFixed(2)}</span>
+                </div>
+                <div class="admin-actions">
+                    <button class="btn-edit" data-id="${product.id}">Editar</button>
+                    <button class="btn-delete" data-id="${product.id}">Eliminar</button>
+                </div>
+            </div>
+        `;
+        productsAdminContainer.appendChild(productCard);
+        
+        // Agregar event listeners
+        productCard.querySelector('.btn-edit').addEventListener('click', () => editProduct(product.id));
+        productCard.querySelector('.btn-delete').addEventListener('click', () => deleteProduct(product.id));
+    });
+}
+  
     function performAdminSearch() {
         const searchTerm = adminSearchInput.value.toLowerCase();
         const category = adminCategoryFilter.value;
@@ -249,13 +233,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return names[category] || category;
     }
     
-    // ======= NUEVA FUNCIÓN PARA HISTORIAL ADMIN =======
+    // ======= FUNCIÓN MEJORADA PARA HISTORIAL ADMIN =======
     function openAdminHistory() {
         const modal = document.createElement('div');
         modal.id = 'admin-history-modal';
         modal.className = 'modal';
         modal.innerHTML = `
-            <div class="modal-content">
+            <div class="modal-content" style="max-width: 800px;">
                 <span class="close-modal">&times;</span>
                 <h2>Historial General de Compras</h2>
                 <div id="admin-history-container" class="history-container"></div>
@@ -271,47 +255,147 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.removeChild(modal);
         });
         
-        // Recopilar todo el historial de todos los usuarios
-        let allHistory = [];
+        // Obtener todos los usuarios registrados
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const usersMap = new Map();
+        users.forEach(user => {
+            usersMap.set(user.id.toString(), user);
+        });
+        
+        // Recopilar todo el historial agrupado por usuario
+        const historyByUser = new Map();
+        
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key.startsWith('userHistory_')) {
-                const userHistory = JSON.parse(localStorage.getItem(key));
+                const userId = key.split('_')[1];
+                const userHistory = JSON.parse(localStorage.getItem(key)) || [];
+                
+                // Si no existe el usuario en el mapa, inicializar
+                if (!historyByUser.has(userId)) {
+                    historyByUser.set(userId, []);
+                }
+                
+                // Agregar cada compra al usuario correspondiente
                 userHistory.forEach(purchase => {
-                    // Obtener el id de usuario de la clave (ej: userHistory_12345)
-                    const userId = key.split('_')[1];
-                    purchase.userId = userId;
-                    allHistory.push(purchase);
+                    historyByUser.get(userId).push(purchase);
                 });
             }
         }
         
-        // Ordenar por fecha (más reciente primero)
-        allHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
-        
         const container = modal.querySelector('#admin-history-container');
         
-        if (allHistory.length === 0) {
+        if (historyByUser.size === 0) {
             container.innerHTML = '<p class="no-history">No hay compras registradas</p>';
             return;
         }
         
-        // Mostrar cada compra
-        allHistory.forEach(purchase => {
-            const purchaseEl = document.createElement('div');
-            purchaseEl.className = 'history-item';
-            purchaseEl.innerHTML = `
-                <div class="history-header">
-                    <span class="history-date">${new Date(purchase.date).toLocaleDateString()}</span>
-                    <span class="history-time">${new Date(purchase.date).toLocaleTimeString()}</span>
-                    <span class="history-user">Usuario ID: ${purchase.userId}</span>
+        // Crear secciones por usuario
+        historyByUser.forEach((purchases, userId) => {
+            const user = usersMap.get(userId);
+            const userName = user ? user.name : `Usuario ${userId}`;
+            const userEmail = user ? user.email : '';
+            
+            const userSection = document.createElement('div');
+            userSection.className = 'user-history-section';
+            userSection.innerHTML = `
+                <div class="user-header">
+                    <h3>${userName}</h3>
+                    <p>${userEmail}</p>
                 </div>
-                <p class="history-total"><strong>Total:</strong> Bs${purchase.total.toFixed(2)}</p>
-                <ul class="history-products">
-                    ${purchase.items.map(item => `<li>${item.name} (x${item.quantity}) - Bs${item.price.toFixed(2)}</li>`).join('')}
-                </ul>
+                <div class="user-purchases-list"></div>
             `;
-            container.appendChild(purchaseEl);
+            
+            const purchasesList = userSection.querySelector('.user-purchases-list');
+            
+            // Ordenar compras por fecha (más reciente primero)
+            purchases.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            purchases.forEach(purchase => {
+                const purchaseEl = document.createElement('div');
+                purchaseEl.className = 'history-item';
+                purchaseEl.innerHTML = `
+                    <div class="history-header">
+                        <span class="history-date">${new Date(purchase.date).toLocaleDateString()}</span>
+                        <span class="history-time">${new Date(purchase.date).toLocaleTimeString()}</span>
+                    </div>
+                    <p class="history-total"><strong>Total:</strong> Bs${purchase.total.toFixed(2)}</p>
+                    <ul class="history-products">
+                        ${purchase.items.map(item => `
+                            <li>
+                                <span>${item.name}</span>
+                                <span>x${item.quantity}</span>
+                                <span>Bs${item.price.toFixed(2)}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                `;
+                purchasesList.appendChild(purchaseEl);
+            });
+            
+            container.appendChild(userSection);
         });
+        
+        // Agregar estilos dinámicamente
+        const style = document.createElement('style');
+        style.textContent = `
+            .user-history-section {
+                margin-bottom: 25px;
+                padding: 15px;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            }
+            .user-header {
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #eee;
+            }
+            .user-header h3 {
+                margin: 0;
+                color: #2E7D32;
+            }
+            .user-header p {
+                margin: 5px 0 0;
+                color: #666;
+            }
+            .history-item {
+                margin-bottom: 15px;
+                padding: 15px;
+                background: #f9f9f9;
+                border-radius: 6px;
+            }
+            .history-header {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 10px;
+                font-size: 0.9em;
+                color: #666;
+            }
+            .history-total {
+                font-weight: bold;
+                margin-bottom: 10px;
+                color: #2196F3;
+            }
+            .history-products {
+                padding: 0;
+                margin: 0;
+            }
+            .history-products li {
+                display: flex;
+                justify-content: space-between;
+                padding: 5px 0;
+                border-bottom: 1px dashed #eee;
+            }
+            .history-products li:last-child {
+                border-bottom: none;
+            }
+            .no-history {
+                text-align: center;
+                padding: 20px;
+                color: #666;
+            }
+        `;
+        modal.appendChild(style);
     }
 });
