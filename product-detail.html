@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Producto - Distribuidora E&E</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #fff;
+    }
+
+    .product-detail-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 1rem;
+    }
+
+    .product-image-container {
+        flex: 1;
+        min-width: 300px;
+        max-width: 500px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .detail-product-image {
+        max-width: 100%;
+        max-height: 500px;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-info-detail {
+        flex: 1;
+        min-width: 300px;
+        max-width: 600px;
+    }
+
+    .detail-product-title {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .detail-product-brand {
+        font-size: 1.1rem;
+        color: #666;
+        margin-bottom: 15px;
+        font-weight: 500;
+    }
+
+    .detail-product-category {
+        display: inline-block;
+        background-color: #f0f9ff;
+        color: #0ea5e9;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+
+    .product-description-detail {
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        margin-bottom: 25px;
+    }
+
+    .product-description-detail h3 {
+        margin-top: 0;
+        color: #333;
+        font-size: 1.3rem;
+    }
+
+    .price-container-detail {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .original-price-detail {
+        text-decoration: line-through;
+        color: #999;
+        font-size: 1.4rem;
+    }
+
+    .sale-price-detail {
+        color: #e63946;
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+
+    .regular-price-detail {
+        color: #333;
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+
+    .product-actions-detail {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .btn-add-to-cart-detail {
+        background-color: #0ea5e9;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-add-to-cart-detail:hover {
+        background-color: #0284c7;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+    }
+
+    .btn-back {
+        background-color: #f8f9fa;
+        color: #333;
+        border: 1px solid #ddd;
+        padding: 12px 25px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn-back:hover {
+        background-color: #e9ecef;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Productos relacionados */
+    .related-products-section {
+        margin-top: 50px;
+        padding: 0 1rem;
+    }
+
+    .related-products-title {
+        text-align: center;
+        font-size: 1.8rem;
+        color: #333;
+        margin-bottom: 30px;
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+    .related-products-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background-color: #0ea5e9;
+    }
+
+    .related-products-carousel {
+        display: flex;
+        overflow-x: auto;
+        gap: 25px;
+        padding: 20px 10px 30px;
+        scrollbar-width: thin;
+        scroll-behavior: smooth;
+    }
+
+    .related-products-carousel::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .related-products-carousel::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .related-products-carousel::-webkit-scrollbar-thumb {
+        background: #0ea5e9;
+        border-radius: 10px;
+    }
+
+    .related-products-carousel::-webkit-scrollbar-thumb:hover {
+        background: #0284c7;
+    }
+
+    .related-product-card {
+        min-width: 250px;
+        max-width: 280px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background: white;
+    }
+
+    .related-product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .related-product-image {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-bottom: 1px solid #eee;
+    }
+
+    .related-product-info {
+        padding: 15px;
+    }
+
+    .related-product-title {
+        font-size: 1.1rem;
+        color: #333;
+        margin: 0 0 8px;
+        height: 50px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+    }
+
+    .related-product-price {
+        color: #e63946;
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin: 10px 0;
+    }
+
+    .related-product-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .btn-add-to-cart-related {
+        flex: 1;
+        background-color: #0ea5e9;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-add-to-cart-related:hover {
+        background-color: #0284c7;
+    }
+
+    .btn-desc-related {
+        background-color: #f8f9fa;
+        color: #333;
+        border: 1px solid #ddd;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-desc-related:hover {
+        background-color: #e9ecef;
+    }
+
+    .carousel-controls {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .carousel-btn {
+        background: #0ea5e9;
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+    }
+
+    .carousel-btn:hover {
+        background: #0284c7;
+        transform: scale(1.1);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .product-detail-container {
+            flex-direction: row;
+            align-items: flex-start;
+        }
+        
+        .product-image-container {
+            flex: 0 0 45%;
+            max-width: 45%;
+        }
+        
+        .product-info-detail {
+            flex: 0 0 55%;
+            max-width: 55%;
+        }
+        
+        .detail-product-image {
+            max-height: 400px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .product-detail-container {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            padding: 1rem 0;
+            margin: 0;
+            gap: 15px;
+        }
+
+        .product-image-container,
+        .product-info-detail {
+            flex: 0 0 90%;
+            min-width: 90%;
+            scroll-snap-align: start;
+        }
+
+        .detail-product-image {
+            max-height: 220px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .product-detail-container {
+            gap: 10px;
+        }
+        
+        .product-image-container,
+        .product-info-detail {
+            flex: 0 0 85%;
+            min-width: 85%;
+        }
+        
+        .detail-product-title {
+            font-size: 1.3rem;
+        }
+        
+        .product-description-detail {
+            padding: 15px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .product-detail-container {
+            padding: 0.5rem 0;
+        }
+        
+        .product-image-container,
+        .product-info-detail {
+            flex: 0 0 80%;
+            min-width: 80%;
+        }
+        
+        .detail-product-image {
+            max-height: 180px;
+        }
+        
+        .product-actions-detail {
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .btn-add-to-cart-detail,
+        .btn-back {
+            width: 100%;
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .product-detail-container {
+            flex-direction: row;
+            flex-wrap: nowrap;
+        }
+        
+        .product-image-container {
+            flex: 0 0 45%;
+            min-width: auto;
+            max-width: 45%;
+        }
+        
+        .product-info-detail {
+            flex: 0 0 55%;
+            min-width: auto;
+            max-width: 55%;
+        }
+        
+        .detail-product-title {
+            font-size: 1.4rem;
+        }
+        
+        .detail-product-brand {
+            font-size: 0.95rem;
+        }
+        
+        .sale-price-detail,
+        .regular-price-detail {
+            font-size: 1.3rem;
+        }
+        
+        .related-products-title {
+            font-size: 1.3rem;
+        }
+        
+        .related-products-title::after {
+            width: 60px;
+        }
+        
+        .related-product-card {
+            min-width: 200px;
+        }
+        
+        .related-product-image {
+            height: 160px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .product-image-container {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+        
+        .product-info-detail {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+        
+        .product-actions-detail {
+            flex-direction: column;
+        }
+        
+        .btn-add-to-cart-detail,
+        .btn-back {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .detail-product-image {
+            max-height: 280px;
+        }
+        
+        .related-product-card {
+            min-width: 180px;
+        }
+    }
+    
+    /* Estilos para alertas */
+    .alert {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        border-radius: 5px;
+        color: white;
+        font-weight: 500;
+        z-index: 1000;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    .alert-success {
+        background-color: #28a745;
+    }
+
+    .alert-error {
+        background-color: #dc3545;
+    }
+
+    .alert-info {
+        background-color: #17a2b8;
+    }
+
+    .fade-out {
+        animation: fadeOut 0.5s ease-out forwards;
+    }
+
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+        to { opacity: 0; transform: translateY(-20px); }
+    }
+</style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-top">
+            <div class="brand-container">
+                <a href="index.html" class="brand-link">
+                    <div class="logo-container">
+                        <img src="imagen/logo.jpg" alt="Distribuidora E&E Logo" class="logo">
+                    </div>
+                    <div class="brand-name">
+                        <h1>Distribuidora <span>E&E</span></h1>
+                        <p>Alimentos y accesorios para mascotas</p>
+                    </div>
+                </a>
+            </div>
+            <div class="mobile-menu-container">
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <div class="header-right">
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Buscar productos...">
+                    <button id="search-btn"><i class="fas fa-search"></i></button>
+                
+            </div>
+            <div class="mobile-menu">
+                <div class="mobile-menu-header">
+                    <img src="imagen/logo.jpg" alt="Logo" class="mobile-menu-logo">
+                </div>
+                <div class="mobile-menu-items">
+                    <a href="#productos" data-category="all" class="mobile-menu-item">Todos los Productos</a>
+                    <a href="#productos" data-category="perros" class="mobile-menu-item">Productos para Perros</a>
+                    <a href="#productos" data-category="gatos" class="mobile-menu-item">Productos para Gatos</a>
+                    <a href="#productos" data-category="accesorios" class="mobile-menu-item">Accesorios</a>
+                    <a href="#productos" data-category="otros" class="mobile-menu-item">Otros Animales</a>
+                    <a href="#ofertas" class="mobile-menu-item">Ofertas</a>
+                    <button id="mobile-history-btn" class="mobile-menu-item">
+                        <i class="fas fa-history"></i> Historial
+                    </button>
+                </div>
+                <div class="mobile-menu-social">
+                    <a href="https://www.tiktok.com/search?lang=es&q=LEX%20ERICKA%C2%B4&t=1743131949180" target="_blank" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.instagram.com/lexericka/" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100064158181876" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                </div>
+            </div>
+            <div class="mobile-menu-overlay"></div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="product-detail-section">
+            <div class="product-detail-container" id="product-detail-container">
+                <!-- Contenido cargado dinámicamente -->
+            </div>
+        </section>
+
+        <section class="related-products-section">
+            <h2 class="related-products-title">Productos Relacionados</h2>
+            <div class="related-products-carousel" id="related-products">
+                <!-- Productos relacionados cargados dinámicamente -->
+            </div>
+            <div class="carousel-controls">
+                <button class="carousel-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Distribuidora E&E</h3>
+                <p>Tu tienda de confianza para productos de mascotas desde 2023.</p>
+                <div class="footer-logo">
+                    <img src="imagen/logo.jpg" alt="Logo Distribuidora E&E">
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <div class="contact-info">
+                    <p><i class="fas fa-envelope"></i> info@distribuidoraey.com</p>
+                    <p><i class="fas fa-phone"></i> +591 77802579</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Santa Cruz de la Sierra, Bolivia</p>
+                    <p><i class="fas fa-clock"></i> Lunes a Viernes: 8:00 - 18:00</p>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="index.html#productos">Productos</a></li>
+                    <li><a href="index.html#ofertas">Ofertas</a></li>
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Redes Sociales</h3>
+                <div class="social-icons">
+                    <a href="https://www.tiktok.com/search?lang=es&q=LEX%20ERICKA%C2%B4&t=1743131949180" target="_blank" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.instagram.com/lexericka/" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100064158181876" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <div class="newsletter">
+                    <p>Suscríbete a nuestro boletín</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Tu correo electrónico">
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Distribuidora E&E. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Botón flotante del carrito -->
+    <div class="cart-floating">
+        <div class="cart-icon-floating">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cart-count-floating">0</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Obtener ID del producto de la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            
+            if (!productId) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Cargar productos desde localStorage
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const product = products.find(p => p.id == productId);
+            
+            if (!product) {
+                document.getElementById('product-detail-container').innerHTML = `
+                    <div class="product-not-found">
+                        <h2>Producto no encontrado</h2>
+                        <p>El producto que buscas no está disponible.</p>
+                        <a href="index.html" class="btn-back">Volver a la tienda</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Mostrar detalles del producto
+            renderProductDetail(product);
+            
+            // Mostrar productos relacionados
+            renderRelatedProducts(product, products);
+            
+            // Configurar controles del carrusel
+            setupCarouselControls();
+            
+            // Actualizar contador del carrito
+            updateCartCount();
+        });
+        
+        function renderProductDetail(product) {
+            const container = document.getElementById('product-detail-container');
+            
+            const priceHtml = product.onSale 
+                ? `<div class="price-container-detail">
+                       <p class="original-price-detail">Bs${product.price.toFixed(2)}</p>
+                       <p class="sale-price-detail">Bs${product.salePrice.toFixed(2)}</p>
+                   </div>`
+                : `<div class="price-container-detail">
+                       <p class="regular-price-detail">Bs${product.price.toFixed(2)}</p>
+                   </div>`;
+            
+            container.innerHTML = `
+                <div class="product-image-container">
+                    <img src="${product.image}" alt="${product.name}" class="detail-product-image">
+                </div>
+                <div class="product-info-detail">
+                    <h2 class="detail-product-title">${product.name}</h2>
+                    ${product.brand ? `<p class="detail-product-brand">Marca: ${product.brand}</p>` : ''}
+                    <span class="detail-product-category">${getCategoryName(product.category)}</span>
+                    
+                    <div class="product-description-detail">
+                        <h3>Descripción</h3>
+                        <p>${product.description}</p>
+                    </div>
+                    
+                    ${priceHtml}
+                    
+                    <div class="product-actions-detail">
+                        <button class="btn-add-to-cart-detail" data-id="${product.id}">
+                            <i class="fas fa-cart-plus"></i> Agregar al carrito
+                        </button>
+                        <a href="index.html" class="btn-back">
+                            <i class="fas fa-arrow-left"></i> Volver a la tienda
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            // Agregar evento al botón de carrito
+            const addToCartBtn = container.querySelector('.btn-add-to-cart-detail');
+            addToCartBtn.addEventListener('click', () => {
+                addToCart(parseInt(product.id));
+            });
+        }
+        
+        function getCategoryName(category) {
+            const names = {
+                'perros': 'Perros',
+                'gatos': 'Gatos',
+                'accesorios': 'Accesorios',
+                'otros': 'Otros Animales'
+            };
+            return names[category] || category;
+        }
+        
+        function renderRelatedProducts(currentProduct, allProducts) {
+            const container = document.getElementById('related-products');
+            
+            // Filtrar productos relacionados (misma marca, excluyendo el actual)
+            const relatedProducts = allProducts.filter(p => 
+                p.brand === currentProduct.brand && 
+                p.id !== currentProduct.id
+            );
+            
+            if (relatedProducts.length === 0) {
+                container.innerHTML = '<p>No hay productos relacionados disponibles</p>';
+                return;
+            }
+            
+            container.innerHTML = relatedProducts.map(product => `
+                <div class="related-product-card">
+                    <img src="${product.image}" alt="${product.name}" class="related-product-image">
+                    <div class="related-product-info">
+                        <h3 class="related-product-title">${product.name}</h3>
+                        <p class="related-product-price">Bs${product.onSale ? product.salePrice.toFixed(2) : product.price.toFixed(2)}</p>
+                        <div class="related-product-actions">
+                            <button class="btn-add-to-cart-related" data-id="${product.id}">
+                                <i class="fas fa-cart-plus"></i> Agregar
+                            </button>
+                            <button class="btn-desc-related" data-id="${product.id}">
+                                <i class="fas fa-info-circle"></i> Ver
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Agregar event listeners
+            addEventListenersToRelated();
+        }
+        
+        function addEventListenersToRelated() {
+            document.querySelectorAll('.btn-add-to-cart-related').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const productId = parseInt(e.target.closest('.btn-add-to-cart-related').dataset.id);
+                    addToCart(productId);
+                });
+            });
+            
+            document.querySelectorAll('.btn-desc-related').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const productId = parseInt(e.target.closest('.btn-desc-related').dataset.id);
+                    window.open(`product-detail.html?id=${productId}`, '_blank');
+                });
+            });
+        }
+        
+        function setupCarouselControls() {
+            const carousel = document.getElementById('related-products');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            
+            prevBtn.addEventListener('click', () => {
+                carousel.scrollBy({ left: -300, behavior: 'smooth' });
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                carousel.scrollBy({ left: 300, behavior: 'smooth' });
+            });
+        }
+        
+        // Función mejorada para agregar al carrito
+        function addToCart(productId) {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                showAlert('error', 'Debes iniciar sesión para agregar productos al carrito');
+                return;
+            }
+            
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const product = products.find(p => p.id == productId);
+            
+            if (!product) {
+                showAlert('error', 'Producto no encontrado');
+                return;
+            }
+            
+            const cartKey = `cart_${currentUser.id}`;
+            const cartData = JSON.parse(localStorage.getItem(cartKey)) || { items: [] };
+            const cart = cartData.items;
+            
+            const existingItem = cart.find(item => item.productId == productId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    productId: product.id,
+                    name: product.name,
+                    price: product.onSale ? product.salePrice : product.price,
+                    image: product.image,
+                    quantity: 1
+                });
+            }
+            
+            localStorage.setItem(cartKey, JSON.stringify({ items: cart }));
+            updateCartCount();
+            
+            showAlert('success', 'Producto agregado al carrito');
+            
+            // Animación del carrito
+            const cartIcon = document.querySelector('.cart-icon-floating');
+            cartIcon.classList.add('pulse');
+            setTimeout(() => {
+                cartIcon.classList.remove('pulse');
+            }, 500);
+        }
+        
+        // Actualizar contador del carrito
+        function updateCartCount() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const cartCountElement = document.getElementById('cart-count-floating');
+            
+            if (!currentUser) {
+                cartCountElement.textContent = '0';
+                return;
+            }
+            
+            const cartKey = `cart_${currentUser.id}`;
+            const cartData = JSON.parse(localStorage.getItem(cartKey)) || { items: [] };
+            const totalItems = cartData.items.reduce((total, item) => total + item.quantity, 0);
+            cartCountElement.textContent = totalItems.toString();
+        }
+        
+        // Mostrar alertas
+        function showAlert(type, message) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.classList.add('fade-out');
+                setTimeout(() => {
+                    alert.remove();
+                }, 500);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
