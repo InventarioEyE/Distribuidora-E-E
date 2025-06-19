@@ -7,298 +7,35 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-          /* Estilos de responsividad móvil adicionales */
+        /* Corrección para menú móvil en esquina superior derecha */
         @media (max-width: 768px) {
-            /* Ajustes de header */
             .header-top {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 10px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
             }
             
             .brand-container {
-                flex-direction: column;
+                flex: 1;
+                min-width: 70%;
+                margin-bottom: 0;
+            }
+            
+            .mobile-menu-container {
+                display: flex;
+                justify-content: flex-end;
                 align-items: center;
-                text-align: center;
-                margin-bottom: 10px;
-            }
-            
-            .nav-horizontal {
-                flex-wrap: wrap;
-                gap: 5px;
-                margin: 10px 0;
-            }
-            
-            .nav-horizontal a {
-                padding: 8px 12px;
-                font-size: 14px;
             }
             
             .header-right {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .search-container {
+                order: 3;
                 width: 100%;
+                margin-top: 10px;
             }
-            
-            .user-actions {
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-            
-            .mobile-menu-btn {
-                position: absolute;
-                top: 20px;
-                right: 15px;
-            }
-            
-            /* Ajustes de contenido principal */
-            .hero h1 {
-                font-size: 1.8rem;
-            }
-            
-            .hero p {
-                font-size: 1rem;
-            }
-            
-            .products-section h2 {
-                font-size: 1.5rem;
-            }
-            
-            .product-filters {
-                overflow-x: auto;
-                flex-wrap: nowrap;
-                justify-content: flex-start;
-                padding-bottom: 5px;
-            }
-            
-            .filter-btn {
-                padding: 8px 15px;
-                font-size: 14px;
-                white-space: nowrap;
-            }
-            
-            /* Mejora de tarjetas de producto */
-            .product-card {
-                min-width: calc(100% - 20px);
-                margin: 0 10px;
-            }
-            
-            .product-image {
-                height: 150px;
-            }
-            
-            .product-title {
-                font-size: 1rem;
-            }
-            
-            .product-price {
-                font-size: 1.1rem;
-            }
-            
-            /* Ajustes para modales */
-            .modal-content {
-                width: 90%;
-                margin: 20% auto;
-                padding: 15px;
-            }
-            
-            .cart-modal-content, .checkout-modal-content {
-                width: 95%;
-            }
-            
-            .cart-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .cart-item-image {
-                width: 100%;
-                height: auto;
-                margin-bottom: 10px;
-            }
-            
-            .delivery-options {
-                grid-template-columns: 1fr;
-            }
-            
-            .store-locations {
-                flex-direction: column;
-            }
-            
-            /* Footer */
-            .footer-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-section {
-                text-align: center;
-                margin-bottom: 20px;
-            }
-            
-            .social-icons {
-                justify-content: center;
-            }
-            
-            /* Botones flotantes */
-            .social-floating {
-                bottom: 70px;
-                right: 15px;
-            }
-            
-            .feedback-btn {
-                bottom: 15px;
-                right: 15px;
-                width: 50px;
-                height: 50px;
-                font-size: 1.2rem;
-            }
-            
-            /* Panel de administración */
-            .admin-filters {
-                flex-direction: column;
-            }
-            
-            .admin-filters .search-container {
-                min-width: 100%;
-            }
-            
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            /* Navegación inferior móvil */
-            .bottom-nav {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                display: flex;
-                justify-content: space-around;
-                background: white;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-                z-index: 1000;
-                padding: 8px 0;
-            }
-            
-            .nav-item {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                font-size: 12px;
-            }
-            
-            .nav-item i {
-                font-size: 18px;
-                margin-bottom: 3px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            /* Ajustes adicionales para pantallas muy pequeñas */
-            .hero {
-                padding: 2rem 1rem;
-            }
-            
-            .hero h1 {
-                font-size: 1.5rem;
-            }
-            
-            .btn-shop {
-                padding: 0.7rem 1.5rem;
-            }
-            
-            .logo {
-                height: 70px;
-            }
-            
-            .brand-name h1 {
-                font-size: 1.3rem;
-            }
-            
-            .brand-name p {
-                font-size: 0.85rem;
-            }
-            
-            .btn-login, .btn-register, .btn-logout, .btn-history {
-                padding: 0.5rem 0.8rem;
-                font-size: 0.85rem;
-            }
-            
-            .product-info {
-                padding: 1rem;
-            }
-            
-            .step {
-                padding: 1rem;
-            }
-            
-            .step h4 {
-                font-size: 1rem;
-            }
-        }
-        
-        /* Mejoras para inputs en móviles */
-        input, select, textarea, button {
-            font-size: 16px !important;
-        }
-        /* Estilos adicionales para los botones de navegación */
-        .nav-horizontal {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-top: 1rem;
-        }
-        
-        .nav-horizontal a {
-            color: var(--dark-color);
-            font-weight: 600;
-            text-decoration: none;
-            padding: 0.6rem 1.5rem;
-            position: relative;
-            transition: all 0.3s;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 30px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            display: inline-block;
-        }
-        
-        .nav-horizontal a:hover, 
-        .nav-horizontal a.active {
-            background: var(--primary-color);
-            color: white;
-            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
         }
     </style>
 </head>
 <body>
-    <!-- Barra de navegación inferior móvil -->
-    <div class="bottom-nav">
-        <div class="nav-item">
-            <i class="fas fa-home"></i>
-            <span>Inicio</span>
-        </div>
-        <div class="nav-item">
-            <i class="fas fa-search"></i>
-            <span>Buscar</span>
-        </div>
-        <div class="nav-item">
-            <i class="fas fa-shopping-cart"></i>
-            <span>Carrito</span>
-        </div>
-        <div class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>Perfil</span>
-        </div>
-    </div>
-
-    <!-- Botón Feedback flotante -->
-    <a href="#contacto" class="feedback-btn">
-        <i class="fas fa-comment-alt"></i>
-    </a>
-
     <!-- Header con Login y Búsqueda -->
     <header class="header">
         <div class="header-top">
@@ -315,9 +52,11 @@
                 </a>
             </div>
             
-            <div class="nav-horizontal">
-                <a href="#productos" class="active">Productos</a>
-                <a href="#ofertas">Ofertas</a>
+            <!-- Botón móvil en esquina superior derecha -->
+            <div class="mobile-menu-container">
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
             
             <div class="header-right">
@@ -333,16 +72,32 @@
                     <button id="history-btn" class="btn-history" style="display: none;">
                         <i class="fas fa-history"></i> Historial
                     </button>
-                    <div class="cart-icon">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span id="cart-count">0</span>
-                    </div>
                 </div>
             </div>
             
-            <button class="mobile-menu-btn">
-                <i class="fas fa-bars"></i>
-            </button>
+            <!-- Menú móvil (solo una instancia) -->
+            <div class="mobile-menu">
+                <div class="mobile-menu-header">
+                    <img src="imagen/logo.jpg" alt="Logo" class="mobile-menu-logo">
+                </div>
+                <div class="mobile-menu-items">
+                    <a href="#productos" data-category="all" class="mobile-menu-item">Todos los Productos</a>
+                    <a href="#productos" data-category="perros" class="mobile-menu-item">Productos para Perros</a>
+                    <a href="#productos" data-category="gatos" class="mobile-menu-item">Productos para Gatos</a>
+                    <a href="#productos" data-category="accesorios" class="mobile-menu-item">Accesorios</a>
+                    <a href="#productos" data-category="otros" class="mobile-menu-item">Otros Animales</a>
+                    <a href="#ofertas" class="mobile-menu-item">Ofertas</a>
+                    <button id="mobile-history-btn" class="mobile-menu-item">
+                        <i class="fas fa-history"></i> Historial
+                    </button>
+                </div>
+                <div class="mobile-menu-social">
+                    <a href="https://www.tiktok.com/search?lang=es&q=LEX%20ERICKA%C2%B4&t=1743131949180" target="_blank" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.instagram.com/lexericka/" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100064158181876" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                </div>
+            </div>
+            <div class="mobile-menu-overlay"></div>
         </div>
     </header>
 
@@ -362,6 +117,17 @@
                 </div>
                 <button type="submit" class="btn-submit">Ingresar</button>
             </form>
+            
+            <!-- Login social - Nuevo -->
+            <div class="social-login">
+                <div class="separator">O inicia sesión con</div>
+                <div class="social-login-buttons">
+                    <button id="facebook-login-btn" class="social-btn facebook-btn">
+                        <i class="fab fa-facebook-f"></i> Facebook
+                    </button>
+                </div>
+            </div>
+            
             <p class="modal-footer">¿No tienes cuenta? <a href="#" id="show-register">Regístrate aquí</a></p>
         </div>
     </div>
@@ -411,24 +177,26 @@
                 <button class="filter-btn" data-category="otros">Otros Animales</button>
             </div>
             
+            <!-- Sección Todos: mostrará categorías una debajo de otra -->
             <div id="all-products-container">
                 <!-- Las categorías se cargarán dinámicamente -->
             </div>
             
+            <!-- Secciones individuales para cada categoría -->
             <div id="perros-container" class="category-container" style="display: none;">
-                <!-- Productos de perros -->
+                <!-- Productos de perros se cargarán dinámicamente -->
             </div>
             
             <div id="gatos-container" class="category-container" style="display: none;">
-                <!-- Productos de gatos -->
+                <!-- Productos de gatos se cargarán dinámicamente -->
             </div>
             
             <div id="accesorios-container" class="category-container" style="display: none;">
-                <!-- Accesorios -->
+                <!-- Accesorios se cargarán dinámicamente -->
             </div>
             
             <div id="otros-container" class="category-container" style="display: none;">
-                <!-- Otros animales -->
+                <!-- Otros animales se cargarán dinámicamente -->
             </div>
         </section>
 
@@ -436,7 +204,7 @@
             <h2>Ofertas Especiales</h2>
             <div class="carousel-container">
                 <div class="products-carousel" id="offers-carousel">
-                    <!-- Productos en oferta -->
+                    <!-- Productos en oferta se cargarán dinámicamente -->
                 </div>
                 <div class="carousel-controls">
                     <button class="carousel-btn prev-offer-btn">
@@ -450,24 +218,52 @@
         </section>
     </main>
 
-    <!-- Footer -->
+     <!-- Footer mejorado -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
                 <h3>Distribuidora E&E</h3>
                 <p>Tu tienda de confianza para productos de mascotas desde 2023.</p>
+                <div class="footer-logo">
+                    <img src="imagen/logo.jpg" alt="Logo Distribuidora E&E">
+                </div>
             </div>
+            
             <div class="footer-section">
                 <h3>Contacto</h3>
-                <p>info@distribuidoraey.com</p>
-                <p>+1 234 567 890</p>
+                <div class="contact-info">
+                    <p><i class="fas fa-envelope"></i> info@distribuidoraey.com</p>
+                    <p><i class="fas fa-phone"></i> +591 77802579</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Santa Cruz de la Sierra, Bolivia</p>
+                    <p><i class="fas fa-clock"></i> Lunes a Viernes: 8:00 - 18:00</p>
+                </div>
             </div>
+            
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#productos">Productos</a></li>
+                    <li><a href="#ofertas">Ofertas</a></li>
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                </ul>
+            </div>
+            
             <div class="footer-section">
                 <h3>Redes Sociales</h3>
                 <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.tiktok.com/search?lang=es&q=LEX%20ERICKA%C2%B4&t=1743131949180" target="_blank" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.instagram.com/lexericka/" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=100064158181876" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <div class="newsletter">
+                    <p>Suscríbete a nuestro boletín</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Tu correo electrónico">
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -476,18 +272,72 @@
         </div>
     </footer>
 
-    <!-- Botón flotante de redes sociales -->
-    <div class="social-floating">
-        <button id="social-toggle"><i class="fas fa-plus"></i></button>
-        <div class="social-buttons">
-            <a href="https://www.tiktok.com/search?lang=es&q=LEX%20ERICKA%C2%B4&t=1743131949180" target="_blank" class="tiktok"><i class="fab fa-tiktok"></i></a>
-            <a href="https://www.instagram.com/lexericka/" target="_blank" class="instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.facebook.com/profile.php?id=100064158181876" target="_blank" class="facebook"><i class="fab fa-facebook-f"></i></a>
+
+    <!-- Añadir botón flotante del carrito -->
+    <div class="cart-floating">
+        <div class="cart-icon-floating">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cart-count-floating">0</span>
         </div>
     </div>
 
-    <!-- Librerías JS -->
+    <!-- Agregar librería jsPDF para generar facturas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
+    <script>
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            const mobileMenuOverlay = document.querySelector('.mobile-menu-overlay');
+            
+            // Toggle mobile menu
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.add('active');
+                mobileMenuOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            mobileMenuOverlay.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                mobileMenuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            // Close menu when clicking on links
+            document.querySelectorAll('.mobile-menu-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                    mobileMenuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                    
+                    if(item.dataset.category) {
+                        const category = item.dataset.category;
+                        loadProducts(category);
+                        document.querySelectorAll('.filter-btn').forEach(btn => {
+                            btn.classList.remove('active');
+                            if(btn.dataset.category === category) {
+                                btn.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            });
+            
+            // Mobile history button
+            document.getElementById('mobile-history-btn')?.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                mobileMenuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+                openHistory();
+            });
+            
+            // Botón de login con Facebook
+            document.getElementById('facebook-login-btn')?.addEventListener('click', function() {
+                // Simulación de login con Facebook
+                showAlert('info', 'Inicio de sesión con Facebook en desarrollo');
+            });
+        });
+    </script>
 </body>
 </html>
