@@ -754,7 +754,7 @@ function openCheckout() {
         currentStep = 3;
     });
     
-    // Paso 3: Pedir pedido por Yango (MODIFICADO PARA MÓVIL)
+    // Paso 3: Pedir pedido por Yango (MODIFICADO PARA ENVÍOS)
     step3Btn.addEventListener('click', () => {
         const yangoModal = document.createElement('div');
         yangoModal.id = 'yango-modal';
@@ -783,7 +783,7 @@ function openCheckout() {
             document.body.removeChild(yangoModal);
         });
         
-        // Event listeners para opciones de Yango (MEJORADO PARA MÓVIL)
+        // Event listeners para opciones de Yango (CORREGIDO PARA ENVÍOS)
         yangoModal.querySelectorAll('.btn-yango-option').forEach(btn => {
             btn.addEventListener('click', () => {
                 const lat = btn.dataset.lat;
@@ -794,10 +794,10 @@ function openCheckout() {
                 const isAndroid = /android/i.test(userAgent);
                 const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
                 
-                // URLs para cada plataforma
-                const androidUrl = `intent://order?pickup-latitude=${lat}&pickup-longitude=${lng}#Intent;scheme=yango;package=ru.yandex.taxi;end;`;
-                const iosUrl = `yango://order?pickup-latitude=${lat}&pickup-longitude=${lng}`;
-                const webUrl = `https://yango.taxi/bo/launcher?pickup-latitude=${lat}&pickup-longitude=${lng}`;
+                // URLs para el servicio de envíos de Yango
+                const androidUrl = `intent://delivery?pickup-latitude=${lat}&pickup-longitude=${lng}#Intent;scheme=yango;package=ru.yandex.taxi;end;`;
+                const iosUrl = `yango://delivery?pickup-latitude=${lat}&pickup-longitude=${lng}`;
+                const webUrl = `https://yango.yandex.com/launcher?pickup-latitude=${lat}&pickup-longitude=${lng}`;
                 
                 // Intentar abrir la app nativa
                 if (isAndroid) {
