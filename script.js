@@ -498,53 +498,6 @@ function loadCart() {
     }
 }
 
-function saveCart() {
-    if (currentUser) {
-        const userCart = {
-            userId: currentUser.id,
-            items: cart
-        };
-        localStorage.setItem(`cart_${currentUser.id}`, JSON.stringify(userCart));
-    }
-}
-
-function addToCart(productId) {
-    if (!currentUser) {
-        showAlert('error', 'Debes iniciar sesión para agregar productos al carrito.');
-        loginModal.style.display = 'block';
-        return;
-    }
-    
-    const product = products.find(p => p.id === productId);
-    if (!product) return;
-    
-    // Buscar si el producto ya está en el carrito
-    const existingItem = cart.find(item => item.productId === productId);
-    
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        cart.push({
-            productId,
-            name: product.name,
-            price: product.onSale ? product.salePrice : product.price,
-            image: product.image,
-            quantity: 1
-        });
-    }
-    
-    saveCart();
-    updateCartCount();
-    showAlert('success', 'Producto agregado al carrito');
-    
-    // Animación del botón flotante
-    cartIcon.classList.add('pulse');
-    setTimeout(() => {
-        cartIcon.classList.remove('pulse');
-    }, 500);
-}
-
-
 function updateCartCount() {
     const count = cart.reduce((total, item) => total + item.quantity, 0);
     cartCountFloating.textContent = count; // Actualizar contador flotante
@@ -801,7 +754,7 @@ function openCheckout() {
         currentStep = 3;
     });
     
-    // Paso 3: Pedir pedido por Yango
+    // Paso 3: Pedir pedido por Yango (MODIFICADO)
     step3Btn.addEventListener('click', () => {
         const yangoModal = document.createElement('div');
         yangoModal.id = 'yango-modal';
@@ -822,37 +775,44 @@ function openCheckout() {
         `;
         
         document.body.appendChild(yangoModal);
-    yangoModal.style.display = 'block';
+        yangoModal.style.display = 'block';
     
-    // Cerrar modal
-    yangoModal.querySelector('.close-modal').addEventListener('click', () => {
-        yangoModal.style.display = 'none';
-        document.body.removeChild(yangoModal);
-    });
-    
-    // Event listeners para opciones de Yango
-    yangoModal.querySelectorAll('.btn-yango-option').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const lat = btn.dataset.lat;
-            const lng = btn.dataset.lng;
-            
-            // ENLACE PARA YANGO BOLIVIA
-            const yangoLink = `https://yango.taxi/bo/launcher?pickup-latitude=${lat}&pickup-longitude=${lng}`;
-            window.open(yangoLink, '_blank');
-            
+        // Cerrar modal
+        yangoModal.querySelector('.close-modal').addEventListener('click', () => {
             yangoModal.style.display = 'none';
             document.body.removeChild(yangoModal);
-            
-            // Ocultar paso 3, mostrar paso 4 (factura)
-            checkoutModal.querySelector('#step3').style.display = 'none';
-            checkoutModal.querySelector('#step4').style.display = 'block';
-            currentStep = 4;
+        });
+        
+        // Event listeners para opciones de Yango (MODIFICADO)
+        yangoModal.querySelectorAll('.btn-yango-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const lat = btn.dataset.lat;
+                const lng = btn.dataset.lng;
+                
+                // Nuevo: Intentar abrir la aplicación Yango directamente
+                const appUrl = `yango://order?pickup-latitude=${lat}&pickup-longitude=${lng}`;
+                window.location.href = appUrl;
+                
+                // Plan B: Si no se abre la app, redirigir al sitio web después de un tiempo
+                setTimeout(() => {
+                    if (!document.webkitHidden && !document.hidden) {
+                        window.open(`https://yango.taxi/bo/launcher?pickup-latitude=${lat}&pickup-longitude=${lng}`, '_blank');
+                    }
+                }, 500);
+                
+                yangoModal.style.display = 'none';
+                document.body.removeChild(yangoModal);
+                
+                // Ocultar paso 3, mostrar paso 4 (factura)
+                checkoutModal.querySelector('#step3').style.display = 'none';
+                checkoutModal.querySelector('#step4').style.display = 'block';
+                currentStep = 4;
+            });
         });
     });
-});
-
-// Paso 4: Descargar factura
-downloadInvoiceBtn.addEventListener('click', generateInvoicePDF);
+    
+    // Paso 4: Descargar factura
+    downloadInvoiceBtn.addEventListener('click', generateInvoicePDF);
 }
 
 function generateInvoicePDF() {
