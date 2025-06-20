@@ -754,7 +754,7 @@ function openCheckout() {
         currentStep = 3;
     });
     
-    // Paso 3: Pedir pedido por Yango (MODIFICADO PARA ENVÍOS)
+    // Paso 3: Pedir pedido por Yango (MODIFICADO PARA APP MÓVIL)
     step3Btn.addEventListener('click', () => {
         const yangoModal = document.createElement('div');
         yangoModal.id = 'yango-modal';
@@ -762,13 +762,16 @@ function openCheckout() {
         yangoModal.innerHTML = `
             <div class="modal-content">
                 <span class="close-modal">&times;</span>
-                <h2>Seleccione la sucursal para el envío</h2>
+                <h2>Seleccione el servicio Yango</h2>
                 <div class="yango-options">
-                    <button class="btn-yango-option" data-lat="-17.7339537" data-lng="-63.1430012">
-                        <i class="fas fa-map-marker-alt"></i> Primera Sucursal (2 de Agosto)
+                    <button class="btn-yango-service" data-type="delivery" data-lat="-17.7339537" data-lng="-63.1430012">
+                        <i class="fas fa-motorcycle"></i> Envío de Paquetes
                     </button>
-                    <button class="btn-yango-option" data-lat="-17.7457094" data-lng="-63.1203297">
-                        <i class="fas fa-map-marker-alt"></i> Segunda Sucursal (Pastelería Chantyllí)
+                    <button class="btn-yango-service" data-type="food" data-lat="-17.7339537" data-lng="-63.1430012">
+                        <i class="fas fa-utensils"></i> Comida a Domicilio
+                    </button>
+                    <button class="btn-yango-service" data-type="ride" data-lat="-17.7339537" data-lng="-63.1430012">
+                        <i class="fas fa-car"></i> Viaje en Taxi
                     </button>
                 </div>
             </div>
@@ -783,9 +786,10 @@ function openCheckout() {
             document.body.removeChild(yangoModal);
         });
         
-        // Event listeners para opciones de Yango (CORREGIDO PARA ENVÍOS)
-        yangoModal.querySelectorAll('.btn-yango-option').forEach(btn => {
+        // Event listeners para opciones de Yango (MEJORADO PARA APP MÓVIL)
+        yangoModal.querySelectorAll('.btn-yango-service').forEach(btn => {
             btn.addEventListener('click', () => {
+                const serviceType = btn.dataset.type;
                 const lat = btn.dataset.lat;
                 const lng = btn.dataset.lng;
                 
@@ -794,10 +798,28 @@ function openCheckout() {
                 const isAndroid = /android/i.test(userAgent);
                 const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
                 
-                // URLs para el servicio de envíos de Yango
-                const androidUrl = `intent://delivery?pickup-latitude=${lat}&pickup-longitude=${lng}#Intent;scheme=yango;package=ru.yandex.taxi;end;`;
-                const iosUrl = `yango://delivery?pickup-latitude=${lat}&pickup-longitude=${lng}`;
-                const webUrl = `https://yango.yandex.com/launcher?pickup-latitude=${lat}&pickup-longitude=${lng}`;
+                // URLs para cada servicio
+                let androidUrl = '';
+                let iosUrl = '';
+                let webUrl = '';
+                
+                switch(serviceType) {
+                    case 'delivery':
+                        androidUrl = `intent://delivery?pickup-latitude=${lat}&pickup-longitude=${lng}#Intent;scheme=yango;package=ru.yandex.taxi;end;`;
+                        iosUrl = `yango://delivery?pickup-latitude=${lat}&pickup-longitude=${lng}`;
+                        webUrl = `https://yango.taxi/bo/delivery?pickup-latitude=${lat}&pickup-longitude=${lng}`;
+                        break;
+                    case 'food':
+                        androidUrl = `intent://food?pickup-latitude=${lat}&pickup-longitude=${lng}#Intent;scheme=yango;package=ru.yandex.taxi;end;`;
+                        iosUrl = `yango://food?pickup-latitude=${lat}&pickup-longitude=${lng}`;
+                        webUrl = `https://yango.taxi/bo/food?pickup-latitude=${lat}&pickup-longitude=${lng}`;
+                        break;
+                    case 'ride':
+                        androidUrl = `intent://ride?pickup-latitude=${lat}&pickup-longitude=${lng}#Intent;scheme=yango;package=ru.yandex.taxi;end;`;
+                        iosUrl = `yango://ride?pickup-latitude=${lat}&pickup-longitude=${lng}`;
+                        webUrl = `https://yango.taxi/bo/ride?pickup-latitude=${lat}&pickup-longitude=${lng}`;
+                        break;
+                }
                 
                 // Intentar abrir la app nativa
                 if (isAndroid) {
@@ -1176,4 +1198,36 @@ function openHistory() {
         `;
         container.appendChild(purchaseEl);
     });
+}
+Las modificaciones clave para Yango están en la función openCheckout(), específicamente en el paso 3:
+
+Interfaz mejorada para Yango:
+
+Ahora muestra tres opciones: Envío de Paquetes, Comida a Domicilio y Viaje en Taxi
+
+Cada opción tiene su propio ícono representativo
+
+Compatibilidad con apps móviles:
+
+javascript
+// Detección de plataforma
+const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+const isAndroid = /android/i.test(userAgent);
+const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+URLs específicas para cada servicio:
+
+javascript
+switch(serviceType) {
+    case 'delivery':
+        androidUrl = `intent://delivery?pickup-latitude=${lat}&pickup-longitude=${lng}#Intent;scheme=yango;package=ru.yandex.taxi;end;`;
+        iosUrl = `yango://delivery?pickup-latitude=${lat}&pickup-longitude=${lng}`;
+        break;
+    case 'food':
+        androidUrl = `intent://food?pickup-latitude=${lat}&pickup-longitude=${lng}#Intent;scheme=yango;package=ru.yandex.taxi;end;`;
+        iosUrl = `yango://food?pickup-latitude=${lat}&pickup-longitude=${lng}`;
+        break;
+    case 'ride':
+        androidUrl = `intent://ride?pickup-latitude=${lat}&pickup-longitude=${lng}#Intent;scheme=yango;package=ru.yandex.taxi;end;`;
+        iosUrl = `yango://ride?pickup-latitude=${lat}&pickup-longitude=${lng}`;
+        break;
 }
