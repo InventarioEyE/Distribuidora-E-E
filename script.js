@@ -754,7 +754,7 @@ function openCheckout() {
         currentStep = 3;
     });
     
-    // Paso 3: Pedir pedido por Yango (MODIFICADO)
+    // Paso 3: Pedir pedido por Yango (MODIFICADO PARA MÓVIL)
     step3Btn.addEventListener('click', () => {
         const yangoModal = document.createElement('div');
         yangoModal.id = 'yango-modal';
@@ -783,20 +783,35 @@ function openCheckout() {
             document.body.removeChild(yangoModal);
         });
         
-        // Event listeners para opciones de Yango (MODIFICADO)
+        // Event listeners para opciones de Yango (MEJORADO PARA MÓVIL)
         yangoModal.querySelectorAll('.btn-yango-option').forEach(btn => {
             btn.addEventListener('click', () => {
                 const lat = btn.dataset.lat;
                 const lng = btn.dataset.lng;
                 
-                // Nuevo: Intentar abrir la aplicación Yango directamente
-                const appUrl = `yango://order?pickup-latitude=${lat}&pickup-longitude=${lng}`;
-                window.location.href = appUrl;
+                // Detección de plataforma
+                const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+                const isAndroid = /android/i.test(userAgent);
+                const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
                 
-                // Plan B: Si no se abre la app, redirigir al sitio web después de un tiempo
+                // URLs para cada plataforma
+                const androidUrl = `intent://order?pickup-latitude=${lat}&pickup-longitude=${lng}#Intent;scheme=yango;package=ru.yandex.taxi;end;`;
+                const iosUrl = `yango://order?pickup-latitude=${lat}&pickup-longitude=${lng}`;
+                const webUrl = `https://yango.taxi/bo/launcher?pickup-latitude=${lat}&pickup-longitude=${lng}`;
+                
+                // Intentar abrir la app nativa
+                if (isAndroid) {
+                    window.location.href = androidUrl;
+                } else if (isIOS) {
+                    window.location.href = iosUrl;
+                } else {
+                    window.open(webUrl, '_blank');
+                }
+                
+                // Plan B: Si no se abre la app, redirigir después de un tiempo
                 setTimeout(() => {
                     if (!document.webkitHidden && !document.hidden) {
-                        window.open(`https://yango.taxi/bo/launcher?pickup-latitude=${lat}&pickup-longitude=${lng}`, '_blank');
+                        window.open(webUrl, '_blank');
                     }
                 }, 500);
                 
