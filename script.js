@@ -160,6 +160,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (facebookLoginBtn) {
         facebookLoginBtn.addEventListener('click', handleFacebookLogin);
     }
+
+    // Event listener para mostrar sucursales desde menú móvil
+    document.getElementById('mobile-store-locations')?.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+        mobileMenuOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+        openStoreLocations();
+    });
 });
 
 // Event Listeners
@@ -265,19 +273,19 @@ function loadProducts(category) {
         section.innerHTML = `<h3 class="category-title">${getCategoryName(category)}</h3>`;
         
         const carousel = document.createElement('div');
-        carousel.className = 'products-carousel';
-        
-        filteredProducts.forEach(product => {
-            const productCard = createProductCard(product);
-            carousel.appendChild(productCard);
-        });
-        
-        section.appendChild(carousel);
-        container.appendChild(section);
-    }
+    carousel.className = 'products-carousel';
     
-    // Agregar event listeners a los botones de carrito
-    addCartEventListeners();
+    filteredProducts.forEach(product => {
+        const productCard = createProductCard(product);
+        carousel.appendChild(productCard);
+    });
+    
+    section.appendChild(carousel);
+    container.appendChild(section);
+}
+
+// Agregar event listeners a los botones de carrito
+addCartEventListeners();
 }
 
 function updateCarouselControls() {
@@ -629,39 +637,33 @@ function removeFromCart(productId) {
     showAlert('success', 'Producto eliminado del carrito');
 }
 
+// Función mejorada para detectar el sistema operativo móvil
+function getMobileOperatingSystem() {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    
+    // iOS detection
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        return "iOS";
+    }
+    
+    // Android detection
+    if (/android/i.test(userAgent)) {
+        return "Android";
+    }
+    
+    return "other";
+}
+
 function openCheckout() {
     const checkoutModal = document.createElement('div');
     checkoutModal.id = 'checkout-modal';
-    checkoutModal.className = 'modal';
+    checkoutModal.className = 'modal'; // Clases para estilos CSS
     checkoutModal.innerHTML = `
         <div class="modal-content checkout-modal-content">
             <span class="close-modal">&times;</span>
             <h2>Escoge un método de entrega</h2>
             
             <div class="delivery-options">
-                <div class="delivery-option">
-                    <h3><i class="fas fa-store"></i> Recoger de tienda</h3>
-                    <p>Puede recoger su pedido en cualquiera de nuestras sucursales:</p>
-                    
-                    <div class="store-locations">
-                        <div class="store-location">
-                            <h4><i class="fas fa-map-marker-alt"></i> Sucursal 2 de Agosto</h4>
-                            <div class="map-container">
-                                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d9431.291817398498!2d-63.1430012!3d-17.7339537!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x93f1e65a8e4de737%3A0x62c0825540fcb9b2!2sMercadito%202%20de%20Agosto!5e1!3m2!1ses-419!2sbo!4v1743428826442!5m2!1ses-419!2sbo" 
-                                        width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-                            </div>
-                        </div>
-                        
-                        <div class="store-location">
-                            <h4><i class="fas fa-map-marker-alt"></i> Sucursal Pastelería Chantyllí</h4>
-                            <div class="map-container">
-                                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d589.4170495341468!2d-63.120329651968326!3d-17.74570944641336!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x93f1e79b792fe3a5%3A0x61662b5d01ab9566!2sPasteleria%20Chantyll%C3%AD!5e1!3m2!1ses-419!2sbo!4v1743429203283!5m2!1ses-419!2sbo" 
-                                        width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
                 <div class="delivery-option">
                     <h3><i class="fas fa-truck"></i> Envío a domicilio</h3>
                     <p>Recibe tus productos en la comodidad de tu hogar</p>
@@ -686,10 +688,20 @@ function openCheckout() {
                         
                         <!-- Paso 3: Pedir pedido (inicialmente oculto) -->
                         <div class="step" id="step3" style="display:none;">
-                            <h4>Paso 3: Pedir pedido</h4>
-                            <p>Solicita el envío a domicilio una vez confirmado el pago</p>
-                            <button id="yango-delivery-btn" class="btn-yango">
-                                <i class="fas fa-motorcycle"></i> Pedir pedido
+                            <h4>Paso 3: Selecciona una sucursal</h4>
+                            <p>Elige la sucursal donde recogerás tu pedido</p>
+                            
+                            <div class="form-group">
+                                <label for="sucursal-select">Sucursal:</label>
+                                <select id="sucursal-select" class="form-control">
+                                    <option value="">-- Selecciona una sucursal --</option>
+                                    <option value="sucursal1">Sucursal 2 de Agosto</option>
+                                    <option value="sucursal2">Sucursal Pastelería Chantyllí</option>
+                                </select>
+                            </div>
+                            
+                            <button id="yango-delivery-btn" class="btn-yango" disabled>
+                                <i class="fas fa-motorcycle"></i> Pedir pedido con Yango
                             </button>
                         </div>
                         
@@ -726,14 +738,15 @@ function openCheckout() {
     // Paso 1: Solicitar pedido por WhatsApp
     step1Btn.addEventListener('click', () => {
         // Construir mensaje con los productos del carrito
-        let message = "Hola, quisiera hacer un pedido. ¿En qué sucursal están disponibles estos productos?%0A%0A";
-        message += "Mi pedido:%0A";
+        let message = "¡Hola! 👋 Quisiera hacer un pedido:%0A%0A";
+        message += "📋 *Mi pedido:*%0A";
         
         cart.forEach(item => {
-            message += `- ${item.name} (Cantidad: ${item.quantity})%0A`;
+            message += `➡️ ${item.name} (Cantidad: ${item.quantity})%0A`;
         });
         
-        message += "%0ATotal: Bs" + cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
+        message += "%0A💲 *Total:* Bs" + cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
+        message += "%0A%0A¿Podrían confirmarme disponibilidad? 🙏";
         
         window.open(`https://wa.me/59177802579?text=${message}`, '_blank');
         
@@ -745,107 +758,57 @@ function openCheckout() {
     
     // Paso 2: Solicitar pago por QR
     step2Btn.addEventListener('click', () => {
-        const message = encodeURIComponent("Por favor envíeme el código QR para realizar el pago.");
+        const message = encodeURIComponent("📲 Por favor envíenme el código QR para realizar el pago.");
         window.open(`https://wa.me/59177802579?text=${message}`, '_blank');
         
-        // Ocultar paso 2, mostrar paso 3
         checkoutModal.querySelector('#step2').style.display = 'none';
         checkoutModal.querySelector('#step3').style.display = 'block';
         currentStep = 3;
     });
     
-    // Paso 3: Pedir pedido por Yango (MODIFICADO PARA APP MÓVIL)
-    step3Btn.addEventListener('click', () => {
-        const yangoModal = document.createElement('div');
-        yangoModal.id = 'yango-modal';
-        yangoModal.className = 'modal';
-        yangoModal.innerHTML = `
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <h2>Seleccione el servicio Yango</h2>
-                <div class="yango-options">
-                    <button class="btn-yango-service" data-type="delivery" data-lat="-17.7339537" data-lng="-63.1430012">
-                        <i class="fas fa-motorcycle"></i> Envío de Paquetes
-                    </button>
-                    <button class="btn-yango-service" data-type="food" data-lat="-17.7339537" data-lng="-63.1430012">
-                        <i class="fas fa-utensils"></i> Comida a Domicilio
-                    </button>
-                    <button class="btn-yango-service" data-type="ride" data-lat="-17.7339537" data-lng="-63.1430012">
-                        <i class="fas fa-car"></i> Viaje en Taxi
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(yangoModal);
-        yangoModal.style.display = 'block';
+    // Objeto con información de las sucursales
+    const sucursales = {
+        sucursal1: {
+            lat: -17.7339537,
+            lon: -63.1430012,
+            title: "Sucursal 2 de Agosto"
+        },
+        sucursal2: {
+            lat: -17.74570944641336,
+            lon: -63.120329651968326,
+            title: "Sucursal Pastelería Chantyllí"
+        }
+    };
     
-        // Cerrar modal
-        yangoModal.querySelector('.close-modal').addEventListener('click', () => {
-            yangoModal.style.display = 'none';
-            document.body.removeChild(yangoModal);
-        });
+    // Event listener para el selector de sucursales
+    const sucursalSelect = checkoutModal.querySelector('#sucursal-select');
+    sucursalSelect.addEventListener('change', function() {
+        step3Btn.disabled = !this.value;
+    });
+    
+    // Paso 3: Pedir pedido por Yango (MODIFICADO para abrir directo sin fallback)
+    step3Btn.addEventListener('click', () => {
+        const sucursalKey = sucursalSelect.value;
+        if (!sucursalKey) return;
         
-        // Event listeners para opciones de Yango (MEJORADO PARA APP MÓVIL)
-        yangoModal.querySelectorAll('.btn-yango-service').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const serviceType = btn.dataset.type;
-                const lat = btn.dataset.lat;
-                const lng = btn.dataset.lng;
-                
-                // Detección de plataforma
-                const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-                const isAndroid = /android/i.test(userAgent);
-                const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-                
-                // URLs para cada servicio
-                let androidUrl = '';
-                let iosUrl = '';
-                let webUrl = '';
-                
-                switch(serviceType) {
-                    case 'delivery':
-                        androidUrl = `intent://delivery?pickup-latitude=${lat}&pickup-longitude=${lng}#Intent;scheme=yango;package=ru.yandex.taxi;end;`;
-                        iosUrl = `yango://delivery?pickup-latitude=${lat}&pickup-longitude=${lng}`;
-                        webUrl = `https://yango.taxi/bo/delivery?pickup-latitude=${lat}&pickup-longitude=${lng}`;
-                        break;
-                    case 'food':
-                        androidUrl = `intent://food?pickup-latitude=${lat}&pickup-longitude=${lng}#Intent;scheme=yango;package=ru.yandex.taxi;end;`;
-                        iosUrl = `yango://food?pickup-latitude=${lat}&pickup-longitude=${lng}`;
-                        webUrl = `https://yango.taxi/bo/food?pickup-latitude=${lat}&pickup-longitude=${lng}`;
-                        break;
-                    case 'ride':
-                        androidUrl = `intent://ride?pickup-latitude=${lat}&pickup-longitude=${lng}#Intent;scheme=yango;package=ru.yandex.taxi;end;`;
-                        iosUrl = `yango://ride?pickup-latitude=${lat}&pickup-longitude=${lng}`;
-                        webUrl = `https://yango.taxi/bo/ride?pickup-latitude=${lat}&pickup-longitude=${lng}`;
-                        break;
-                }
-                
-                // Intentar abrir la app nativa
-                if (isAndroid) {
-                    window.location.href = androidUrl;
-                } else if (isIOS) {
-                    window.location.href = iosUrl;
-                } else {
-                    window.open(webUrl, '_blank');
-                }
-                
-                // Plan B: Si no se abre la app, redirigir después de un tiempo
-                setTimeout(() => {
-                    if (!document.webkitHidden && !document.hidden) {
-                        window.open(webUrl, '_blank');
-                    }
-                }, 500);
-                
-                yangoModal.style.display = 'none';
-                document.body.removeChild(yangoModal);
-                
-                // Ocultar paso 3, mostrar paso 4 (factura)
-                checkoutModal.querySelector('#step3').style.display = 'none';
-                checkoutModal.querySelector('#step4').style.display = 'block';
-                currentStep = 4;
-            });
-        });
+        const sucursal = sucursales[sucursalKey];
+        if (!sucursal) return;
+
+        // Construir deep link para Yango
+        const yangoDeepLink = `yango://ride?lat=${sucursal.lat}&lon=${sucursal.lon}&title=${encodeURIComponent(sucursal.title)}`;
+        const os = getMobileOperatingSystem();
+        
+        // Intentar abrir la app directamente
+        if (os === "iOS") {
+            window.location.href = yangoDeepLink;
+        } else if (os === "Android") {
+            window.location.href = `intent://${yangoDeepLink.split('://')[1]}#Intent;scheme=yango;package=com.yango.go;end`;
+        }
+        
+        // Avanzar al paso 4
+        checkoutModal.querySelector('#step3').style.display = 'none';
+        checkoutModal.querySelector('#step4').style.display = 'block';
+        currentStep = 4;
     });
     
     // Paso 4: Descargar factura
@@ -1199,35 +1162,45 @@ function openHistory() {
         container.appendChild(purchaseEl);
     });
 }
-Las modificaciones clave para Yango están en la función openCheckout(), específicamente en el paso 3:
 
-Interfaz mejorada para Yango:
-
-Ahora muestra tres opciones: Envío de Paquetes, Comida a Domicilio y Viaje en Taxi
-
-Cada opción tiene su propio ícono representativo
-
-Compatibilidad con apps móviles:
-
-javascript
-// Detección de plataforma
-const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-const isAndroid = /android/i.test(userAgent);
-const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-URLs específicas para cada servicio:
-
-javascript
-switch(serviceType) {
-    case 'delivery':
-        androidUrl = `intent://delivery?pickup-latitude=${lat}&pickup-longitude=${lng}#Intent;scheme=yango;package=ru.yandex.taxi;end;`;
-        iosUrl = `yango://delivery?pickup-latitude=${lat}&pickup-longitude=${lng}`;
-        break;
-    case 'food':
-        androidUrl = `intent://food?pickup-latitude=${lat}&pickup-longitude=${lng}#Intent;scheme=yango;package=ru.yandex.taxi;end;`;
-        iosUrl = `yango://food?pickup-latitude=${lat}&pickup-longitude=${lng}`;
-        break;
-    case 'ride':
-        androidUrl = `intent://ride?pickup-latitude=${lat}&pickup-longitude=${lng}#Intent;scheme=yango;package=ru.yandex.taxi;end;`;
-        iosUrl = `yango://ride?pickup-latitude=${lat}&pickup-longitude=${lng}`;
-        break;
+// ======= NUEVA FUNCIÓN PARA MOSTRAR SUCURSALES =======
+function openStoreLocations() {
+    const modal = document.createElement('div');
+    modal.id = 'store-locations-modal';
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2><i class="fas fa-store"></i> Nuestras Sucursales</h2>
+            
+            <div class="store-locations">
+                <div class="store-location">
+                    <h3><i class="fas fa-map-marker-alt"></i> Sucursal 2 de Agosto</h3>
+                    <p><i class="fas fa-clock"></i> Horario: 8:00 AM - 8:00 PM</p>
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d9431.291817398498!2d-63.1430012!3d-17.7339537!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x93f1e65a8e4de737%3A0x62c0825540fcb9b2!2sMercadito%202%20de%20Agosto!5e1!3m2!1ses-419!2sbo!4v1743428826442!5m2!1ses-419!2sbo" 
+                                width="100%" height="300" style="border:0;" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                </div>
+                
+                <div class="store-location">
+                    <h3><i class="fas fa-map-marker-alt"></i> Sucursal Pastelería Chantyllí</h3>
+                    <p><i class="fas fa-clock"></i> Horario: 9:00 AM - 7:00 PM</p>
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d589.4170495341468!2d-63.120329651968326!3d-17.74570944641336!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x93f1e79b792fe3a5%3A0x61662b5d01ab9566!2sPasteleria%20Chantyll%C3%AD!5e1!3m2!1ses-419!2sbo!4v1743429203283!5m2!1ses-419!2sbo" 
+                                width="100%" height="300" style="border:0;" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    modal.style.display = 'block';
+    
+    // Cerrar modal
+    modal.querySelector('.close-modal').addEventListener('click', () => {
+        modal.style.display = 'none';
+        document.body.removeChild(modal);
+    });
 }
