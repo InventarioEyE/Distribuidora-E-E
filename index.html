@@ -33,6 +33,206 @@
                 margin-top: 10px;
             }
         }
+        
+        /* Mejoras para el proceso de compra */
+        .delivery-steps {
+            padding: 15px;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        
+        .step h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .step p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .btn-whatsapp, .btn-qr, .btn-yango, .btn-invoice {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            border: none;
+        }
+        
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        
+        .btn-whatsapp:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+        }
+        
+        .btn-qr {
+            background: #0ea5e9;
+            color: white;
+        }
+        
+        .btn-qr:hover {
+            background: #0284c7;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.3);
+        }
+        
+        .btn-yango {
+            background: #FFCC00;
+            color: #333;
+        }
+        
+        .btn-yango:hover {
+            background: #E6B800;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 204, 0, 0.3);
+        }
+        
+        .btn-invoice {
+            background: #9c27b0;
+            color: white;
+        }
+        
+        .btn-invoice:hover {
+            background: #7b1fa2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(156, 39, 176, 0.3);
+        }
+        
+        .yango-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn-yango-service {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            border: none;
+            background: #f0f0f0;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-yango-service:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+        
+        .btn-yango-service i {
+            font-size: 1.5rem;
+        }
+        
+        .store-locations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .store-location {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .store-location h3 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #2c3e50;
+        }
+        
+        .map-container {
+            margin-top: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        /* Estilos para el botón de sucursales en menú móvil */
+        #mobile-store-locations {
+            display: flex;
+            align-items: center;
+            padding: 1.2rem 2rem;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+            gap: 0.8rem;
+            border-left: 4px solid transparent;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        
+        #mobile-store-locations:hover,
+        #mobile-store-locations.active {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #e67e22;
+            transform: translateX(0);
+        }
+        
+        /* Responsividad para modal de sucursales */
+        @media (max-width: 768px) {
+            .store-locations {
+                grid-template-columns: 1fr;
+            }
+            
+            .map-container iframe {
+                height: 250px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .map-container iframe {
+                height: 200px;
+            }
+            
+            .btn-whatsapp, .btn-qr, .btn-yango, .btn-invoice {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .step {
+                padding: 15px;
+            }
+            
+            .step h4 {
+                font-size: 1.1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -89,6 +289,10 @@
                     <a href="#ofertas" class="mobile-menu-item">Ofertas</a>
                     <button id="mobile-history-btn" class="mobile-menu-item">
                         <i class="fas fa-history"></i> Historial
+                    </button>
+                    <!-- Nuevo botón para Sucursales con estilo igual a los demás -->
+                    <button id="mobile-store-locations" class="mobile-menu-item">
+                        <i class="fas fa-map-marker-alt"></i> Sucursales
                     </button>
                 </div>
                 <div class="mobile-menu-social">
@@ -336,6 +540,14 @@
             document.getElementById('facebook-login-btn')?.addEventListener('click', function() {
                 // Simulación de login con Facebook
                 showAlert('info', 'Inicio de sesión con Facebook en desarrollo');
+            });
+
+            // Event listener para mostrar sucursales desde menú móvil
+            document.getElementById('mobile-store-locations')?.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                mobileMenuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+                openStoreLocations();
             });
         });
     </script>
