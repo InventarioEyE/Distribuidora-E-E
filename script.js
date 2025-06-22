@@ -786,7 +786,7 @@ function openCheckout() {
         step3Btn.disabled = !this.value;
     });
     
-    // Paso 3: Pedir pedido por Yango (MODIFICADO para abrir directo sin fallback)
+    // Paso 3: Pedir pedido por Yango (solución mejorada para iOS y Android)
     step3Btn.addEventListener('click', () => {
         const sucursalKey = sucursalSelect.value;
         if (!sucursalKey) return;
@@ -794,15 +794,28 @@ function openCheckout() {
         const sucursal = sucursales[sucursalKey];
         if (!sucursal) return;
 
-        // Construir deep link para Yango
-        const yangoDeepLink = `yango://ride?lat=${sucursal.lat}&lon=${sucursal.lon}&title=${encodeURIComponent(sucursal.title)}`;
+        // Formato universal para Yango
+        const yangoUniversalLink = `https://go.yango.com/order?dropoff_latitude=${sucursal.lat}&dropoff_longitude=${sucursal.lon}&dropoff_name=${encodeURIComponent(sucursal.title)}`;
+        const yangoDeepLink = `yango://order?dropoff_latitude=${sucursal.lat}&dropoff_longitude=${sucursal.lon}&dropoff_name=${encodeURIComponent(sucursal.title)}`;
+        
         const os = getMobileOperatingSystem();
         
-        // Intentar abrir la app directamente
         if (os === "iOS") {
+            // iOS: Intentar abrir app directamente
             window.location.href = yangoDeepLink;
+            
+            // Fallback a enlace universal después de un breve retraso
+            setTimeout(() => {
+                if (!document.webkitHidden) {
+                    window.location.href = yangoUniversalLink;
+                }
+            }, 500);
         } else if (os === "Android") {
-            window.location.href = `intent://${yangoDeepLink.split('://')[1]}#Intent;scheme=yango;package=com.yango.go;end`;
+            // Android: Usar intent
+            window.location.href = `intent://order?dropoff_latitude=${sucursal.lat}&dropoff_longitude=${sucursal.lon}&dropoff_name=${encodeURIComponent(sucursal.title)}#Intent;scheme=yango;package=com.yango.go;end`;
+        } else {
+            // Escritorio u otros: Abrir enlace universal
+            window.open(yangoUniversalLink, "_blank");
         }
         
         // Avanzar al paso 4
@@ -1163,7 +1176,7 @@ function openHistory() {
     });
 }
 
-// ======= NUEVA FUNCIÓN PARA MOSTRAR SUCURSALES =======
+// ======= FUNCIÓN PARA MOSTRAR SUCURSALES =======
 function openStoreLocations() {
     const modal = document.createElement('div');
     modal.id = 'store-locations-modal';
